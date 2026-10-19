@@ -96,6 +96,7 @@ p.vs { color: var(--muted); margin: 0; font-size: 16px; }
 .chipbtn { all: unset; cursor: pointer; font-size: 14px; padding: 6px 12px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); color: var(--ink); }
 .hint .chipbtn { font-size: 14px; padding: 6px 12px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); color: var(--ink); }
 .hint .chipbtn:hover { border-color: var(--accent); text-decoration: none; }
+.hint .paperchip { max-width: 100%; white-space: normal; text-align: left; line-height: 1.35; }
 .chipbtn:hover { border-color: var(--accent); }
 .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
 .chip { font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: var(--panel-2); color: var(--muted); }
@@ -312,11 +313,15 @@ footer b { color: var(--ink); }
       <button class="btn primary" id="tgo" type="button">Search</button>
     </div>
     <div class="hint" id="tex">Try
-      <button class="chipbtn" data-t="retrieval-augmented generation">retrieval-augmented generation</button>
-      <button class="chipbtn" data-t="LLM agents for software engineering">LLM agents for software engineering</button>
-      <button class="chipbtn" data-t="diffusion models for protein design">diffusion models for protein design</button>
-      <button class="chipbtn" data-t="mechanistic interpretability of language models">mechanistic interpretability</button>
+      <button class="chipbtn" data-t="reinforcement learning for LLM reasoning">RL for LLM reasoning</button>
+      <button class="chipbtn" data-t="LLM agents">LLM agents</button>
+      <button class="chipbtn" data-t="multimodal large language models">multimodal LLMs</button>
+      <button class="chipbtn" data-t="text-to-video generation">video generation</button>
       <button class="chipbtn" data-t="vision-language-action models for robot manipulation">VLA for robots</button>
+      <button class="chipbtn" data-t="efficient LLM inference with KV cache compression and speculative decoding">efficient LLM inference</button>
+    </div>
+    <div class="hint" style="margin-top:8px">Or try a whole paper:
+      <button class="chipbtn paperchip" id="texPaper" type="button" title="Fills in the title and abstract of Hi-Q, the author's NeurIPS 2026 paper">📄 Hi-Q: Hierarchical Evidence-guided Query Refinement for Multi-Hop QA <span style="color:var(--faint)">(my NeurIPS 2026 paper)</span></button>
     </div>
     <div class="opts">
       <span>Look at the</span>
@@ -678,6 +683,8 @@ footer b { color: var(--ink); }
   $('#tq').addEventListener('focus', () => { ensurePapers(); warmModel(); }, { once: true });
   $('#tk').addEventListener('change', () => { if (lastTopicQuery) runTopic(lastTopicQuery, false); });
   document.querySelectorAll('#tex button').forEach(b => b.addEventListener('click', () => { $('#tq').value = b.dataset.t; runTopic(b.dataset.t); }));
+  const HIQ_ABSTRACT = "Hi-Q: Hierarchical Evidence-guided Query Refinement for Multi-Hop Question Answering. A central bottleneck in multi-hop Question Answering (QA) is that the granularity at which a question is expressed often differs from the granularity at which corpus evidence is retrievable. Existing methods address this mismatch either by imposing fixed graph structures over the corpus or by iteratively reformulating the query, but these strategies do not explicitly decide when a query unit is already supported by evidence and when it should be refined. We formulate this bottleneck as retrievable granularity discovery and introduce Hi-Q, an evidence-conditioned framework for hierarchical query refinement. At each query node, a resolution operator tests whether retrieved evidence supports the current query unit; resolved nodes terminate, while unresolved nodes are expanded by a dependency-preserving binary operator and checked by a semantic coverage verifier. Hi-Q therefore grows a query tree whose topology is determined by corpus support signals rather than by a fixed decomposition template or a pre-built graph. Across three multi-hop QA benchmarks, Hi-Q achieves 57.9 EM and 69.3 F1 on average, outperforming PropRAG, a graph-based RAG baseline, by 5.6 EM / 3.9 F1 and IRCoT, an iterative retrieval baseline, by 13.7 EM / 15.8 F1. Under full-corpus retrieval, Hi-Q maintains its gains with 53.4 EM and 65.2 F1 on average, improving over IRCoT by 16.3 EM / 19.4 F1 without corpus-wide graph construction.";
+  $('#texPaper').addEventListener('click', () => { $('#tq').value = HIQ_ABSTRACT; runTopic(HIQ_ABSTRACT); });
 
   route();
 })();
