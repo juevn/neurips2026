@@ -53,7 +53,7 @@ button { font-family: inherit; }
 .hero .title { font-family: 'Google Sans Display', 'Google Sans', sans-serif; font-weight: 700; letter-spacing: -3px; line-height: .95; font-size: clamp(56px, 13vw, 128px); margin: 0; }
 .hero .title .n { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .hero .title .y { color: transparent; -webkit-text-stroke: 2.5px var(--ink); margin-left: .1em; }
-.hero p { color: var(--muted); font-size: clamp(17px, 2.4vw, 21px); margin: 16px auto 0; max-width: 640px; }
+.hero p { color: var(--muted); font-size: clamp(17px, 2.4vw, 21px); margin: 16px auto 0; max-width: 640px; text-wrap: balance; }
 .stats { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin: 22px 0 6px; }
 .stats div { text-align: center; }
 .stats b { display: block; font-size: 28px; letter-spacing: -.5px; }
@@ -129,7 +129,15 @@ select { font: inherit; font-size: 14px; font-weight: 700; padding: 9px 12px; bo
 .mix h3 { margin: 0 0 4px; font-size: 18px; }
 .mix .note { color: var(--muted); font-size: 14px; margin: 0 0 12px; }
 .stack { display: flex; height: 18px; border-radius: 9px; overflow: hidden; background: var(--panel-2); }
-.stack div { height: 100%; }
+.stack div { height: 100%; cursor: default; }
+.stack div:hover { filter: brightness(1.12); }
+.stackcap { font-size: 13px; color: var(--muted); margin: 14px 0 6px; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 8px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.legend b { color: var(--ink); font-weight: 500; }
+#tip { position: fixed; z-index: 50; pointer-events: none; background: var(--ink); color: var(--bg); font-size: 13px; padding: 6px 9px; border-radius: 8px; white-space: nowrap; opacity: 0; transition: opacity .1s; }
+#tip.on { opacity: 1; }
 .arow { display: grid; grid-template-columns: minmax(150px, 1.6fr) 44px 1fr 92px; gap: 10px; align-items: center; padding: 7px 0; border-bottom: 1px dashed var(--line); font-size: 15px; }
 .arow:last-child { border-bottom: 0; }
 .arow .nm { display: flex; align-items: center; gap: 8px; min-width: 0; }
@@ -201,6 +209,10 @@ td .nm { font-weight: 500; overflow-wrap: anywhere; }
 .blk .note { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
 .paper { padding: 12px 0; border-bottom: 1px solid var(--line); }
 .paper .t { font-weight: 500; font-size: 15.5px; }
+.paper .t a { color: var(--ink); text-decoration: none; }
+.paper .t a:hover { text-decoration: underline; }
+.paper .t a::after { content: ' ↗'; color: var(--muted); font-size: 13px; }
+.paper .ses { font-size: 12.5px; color: var(--muted); }
 .paper .meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; }
 .paper .sim { font-size: 12.5px; font-weight: 700; color: var(--faint); margin-right: 4px; }
 .paper .ia { all: unset; cursor: pointer; font-size: 12.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--panel-2); color: var(--muted); }
@@ -210,7 +222,13 @@ td .nm { font-weight: 500; overflow-wrap: anywhere; }
 .paper .ar i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
 
 section.about { margin-top: 44px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14.5px; }
-section.about h2 { color: var(--ink); font-size: 20px; margin: 0 0 8px; }
+section.about h2 { color: var(--ink); font-size: 20px; margin: 0; display: inline; }
+section.about summary { cursor: pointer; list-style: none; display: flex; align-items: baseline; gap: 10px; padding: 4px 0 10px; }
+section.about summary::-webkit-details-marker { display: none; }
+section.about summary::before { content: '▸'; color: var(--muted); font-size: 15px; transition: transform .15s; display: inline-block; }
+section.about details[open] summary::before { transform: rotate(90deg); }
+section.about summary .more { font-size: 14px; color: var(--muted); }
+section.about details[open] summary .more { display: none; }
 section.about li { margin: 5px 0; }
 footer { margin-top: 26px; color: var(--muted); font-size: 14px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 footer b { color: var(--ink); }
@@ -248,7 +266,7 @@ footer b { color: var(--ink); }
   <section class="view" id="v-home" aria-label="Home">
     <div class="hero">
       <p class="title"><span class="n">NeurIPS</span><span class="y">2026</span></p>
-      <p>Who wrote the accepted papers, and who works on what. Two ways in:</p>
+      <p>Who wrote the accepted papers, and who works on what. Two&nbsp;ways&nbsp;in:</p>
       <div class="stats" id="stats"></div>
     </div>
     <div class="doors">
@@ -333,7 +351,8 @@ footer b { color: var(--ink); }
   </section>
 
   <section class="about" id="about">
-    <h2>How this was made</h2>
+    <details>
+    <summary><h2>How this was made</h2><span class="more">data, method and caveats</span></summary>
     <ul>
       <li><b>Papers and institutions</b> come from the official neurips.cc program data, which lists each author's institution from their OpenReview profile. Main track only, snapshot <span class="snap"></span>.</li>
       <li><b>Counting:</b> a paper counts once for every institution with at least one author on it, so shares add up to more than 100%. The <i>fractional</i> count splits each paper equally across its authors, then across each author's institutions.</li>
@@ -344,6 +363,7 @@ footer b { color: var(--ink); }
       <li>No author names are included. <a href="neurips2026_institutions.csv" download>Download the institution table (CSV)</a>.</li>
       <li id="fix">Spotted a wrong mapping? Corrections are welcome.</li>
     </ul>
+    </details>
     <footer>
       <span>Made by <b>Jueun Kim</b> (POSTECH), author of <a href="https://neurips.cc/virtual/2026/poster/155067" rel="noopener">Hi-Q</a> (NeurIPS 2026) · <a href="https://x.com/jueun_kim_" rel="noopener">@jueun_kim_</a></span>
       <span>Data snapshot <span class="snap"></span></span>
@@ -358,10 +378,27 @@ footer b { color: var(--ink); }
   'use strict';
   const D = window.NEURIPS, M = D.meta, A = M.areas, INST = D.inst, N = M.papers;
   const REPO_URL = 'https://github.com/juevn/neurips2026';
-  const PVER = '593ded05fb';
+  const PVER = '80416291c7';
   const $ = (s) => document.querySelector(s);
   const el = (tag, props = {}, kids = []) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (v == null) continue; if (k === 'style') e.style.cssText = v; else if (k === 'text') e.textContent = v; else if (k.startsWith('data-') || k.startsWith('aria-') || k === 'role') e.setAttribute(k, v); else e[k] = v; } for (const c of [].concat(kids)) if (c != null) e.append(c); return e; };
   const fmt = (x) => x.toLocaleString('en-US');
+  // area mix bar: segments carry data-tip, a legend lists areas by size (hover/tap shows the exact count)
+  const tip = el('div', { id: 'tip', role: 'tooltip' }); document.body.append(tip);
+  const showTip = (e) => { const t = e.target.closest('[data-tip]'); if (!t) { tip.classList.remove('on'); return; } tip.textContent = t.dataset.tip; tip.classList.add('on');
+    const x = Math.min(e.clientX + 12, innerWidth - tip.offsetWidth - 8); tip.style.left = Math.max(8, x) + 'px'; tip.style.top = (e.clientY + 16) + 'px'; };
+  document.addEventListener('mousemove', showTip); document.addEventListener('click', showTip);
+  const hideTip = () => tip.classList.remove('on'); addEventListener('hashchange', hideTip); addEventListener('scroll', hideTip, { passive: true }); document.addEventListener('mouseleave', hideTip);
+  const areaBar = (counts, order, caption) => {
+    const tot = counts.reduce((a, b) => a + b, 0) || 1;
+    const ids = order.filter(i => counts[i]);
+    const byN = [...ids].sort((a, b) => counts[b] - counts[a]);
+    return [
+      caption ? el('div', { className: 'stackcap', text: caption }) : null,
+      el('div', { className: 'stack' }, ids.map(i => el('div', { 'data-tip': `${A[i].name}: ${counts[i]} (${pct(counts[i] / tot, 0)})`, 'aria-label': `${A[i].name}: ${counts[i]}`, style: `flex:${counts[i]};background:${A[i].color}` }))),
+      el('div', { className: 'legend' }, byN.slice(0, 8).map(i => el('span', { 'data-tip': `${A[i].name}: ${counts[i]} (${pct(counts[i] / tot, 0)})` }, [el('i', { style: `background:${A[i].color}` }), el('b', { text: A[i].short }), document.createTextNode(pct(counts[i] / tot, 0))]))
+        .concat(byN.length > 8 ? [el('span', { text: `+${byN.length - 8} more` })] : [])),
+    ];
+  };
   const pct = (x, d = 1) => (x * 100).toFixed(d) + '%';
   const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/&/g, ' and ').replace(/[^a-z0-9぀-鿿]+/g, ' ').trim();
   const slug = (s) => norm(s).replace(/ /g, '-');
@@ -502,7 +539,7 @@ footer b { color: var(--ink); }
       el('div', { className: 'mix' }, [
         el('h3', { text: 'What they publish' }),
         el('p', { className: 'note', text: noisy ? 'Share of this institution’s papers by research area. With fewer than 8 papers, this mix is too small to compare.' : 'Share of this institution’s papers by research area, compared with the whole conference (black tick).' }),
-        el('div', { className: 'stack' }, order.filter(i => x.a[i]).map(i => el('div', { title: `${A[i].name}: ${x.a[i]}`, style: `flex:${x.a[i]};background:${A[i].color}` }))),
+        ...areaBar(x.a, order, null),
         el('div', { style: 'margin-top:12px' }, rows),
         noisy ? null : el('div', { className: 'legendline' }, [el('span', {}, [el('span', { className: 'tick' }), document.createTextNode('conference average')]), el('span', { text: '“2.0× avg” = twice the conference-wide share' })]),
       ]),
@@ -554,7 +591,7 @@ footer b { color: var(--ink); }
   /* =================== TOPICS =================== */
   const MODEL = 'Xenova/bge-small-en-v1.5';
   const TJS = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.2';
-  let P = null, V = null, S = null, DIM = 384;        // paper rows, int8 vectors, per-paper scales
+  let P = null, V = null, S = null, SES = [], DIM = 384;        // paper rows, int8 vectors, per-paper scales
   let papersReady = null, extractor = null, modelReady = null, lastTopicQuery = null, idf = null;
   const st = $('#tstatus');
   function setStatus(msg, frac) {
@@ -565,7 +602,7 @@ footer b { color: var(--ink); }
     papersReady = new Promise((resolve, reject) => {
       const s = document.createElement('script'); s.src = `papers.js?v=${PVER}`; s.onload = resolve; s.onerror = () => reject(new Error('papers.js failed to load')); document.head.append(s);
     }).then(() => fetch(`papers.bin?v=${PVER}`)).then(r => { if (!r.ok) throw new Error('papers.bin ' + r.status); return r.arrayBuffer(); }).then(buf => {
-      P = window.PAPERS.rows; DIM = window.PAPERS.dim; const n = P.length;
+      P = window.PAPERS.rows; SES = window.PAPERS.sessions || []; DIM = window.PAPERS.dim; const n = P.length;
       S = new Float32Array(buf, 0, n); V = new Int8Array(buf, n * 4, n * DIM);
     });
     return papersReady;
@@ -644,12 +681,13 @@ footer b { color: var(--ink); }
     const tweet = lead ? `Who publishes the most on "${shortQ}" at NeurIPS 2026? #1 is ${lead.n} (${cnt.get(ranked[0])} of the ${idx.length} closest papers). Check your topic:` : `Who publishes on "${shortQ}" at NeurIPS 2026?`;
 
     const papers = idx.slice(0, 20).map(i => {
-      const [title, insts, ar] = P[i];
+      const [title, insts, ar, url, ses] = P[i];
       return el('div', { className: 'paper' }, [
-        el('div', { className: 't', text: title }),
+        el('div', { className: 't' }, url ? el('a', { href: 'https://neurips.cc/virtual/2026/' + url, target: '_blank', rel: 'noopener', text: title }) : title),
         el('div', { className: 'meta' }, [
           mode === 'semantic' ? el('span', { className: 'sim', text: `match ${(sims[i] * 100).toFixed(0)}` }) : null,
           el('span', { className: 'ar' }, [el('i', { style: `background:${A[ar].color}` }), document.createTextNode(A[ar].short)]),
+          SES[ses] ? el('span', { className: 'ses', text: '📍 ' + SES[ses] }) : null,
           ...insts.slice(0, 6).map(k => el('button', { className: 'ia ' + (INST[k].s || ''), type: 'button', text: INST[k].n, onclick: () => openInst(INST[k]) })),
           insts.length > 6 ? el('span', { className: 'sim', text: `+${insts.length - 6} more` }) : null,
         ]),
@@ -660,7 +698,7 @@ footer b { color: var(--ink); }
       el('div', { className: 'summary' }, [
         el('div', { className: 'big' }, [document.createTextNode('Who publishes on '), el('span', { className: 'q', text: `“${shortQ}”` })]),
         el('div', { className: 'sub', text: `Based on the ${idx.length} closest of ${fmt(P.length)} papers · ${pct(withInd / Math.max(1, idx.length), 0)} have a company author · most common area: ${A[topArea].name}` }),
-        el('div', { className: 'stack', style: 'margin-top:12px' }, areaCnt.map((v, i) => v ? el('div', { title: `${A[i].name}: ${v}`, style: `flex:${v};background:${A[i].color}` }) : null)),
+        ...areaBar(areaCnt, A.map((_, i) => i), `Research areas of these ${idx.length} papers`),
         el('div', { className: 'share' }, [
           el('a', { className: 'btn primary', href: `https://x.com/intent/post?text=${encodeURIComponent(tweet)}&url=${encodeURIComponent(shareUrl)}`, target: '_blank', rel: 'noopener', text: 'Share on X' }),
           el('button', { className: 'btn', type: 'button', text: 'Copy link', onclick: () => copy(shareUrl) }),
@@ -672,7 +710,7 @@ footer b { color: var(--ink); }
       ]),
       el('div', { className: 'blk' }, [
         el('h3', { text: 'Closest papers' }),
-        el('p', { className: 'note', text: 'The 20 accepted papers closest to your text. Click an institution to open its page.' }),
+        el('p', { className: 'note', text: 'The 20 accepted papers closest to your text. Click a title for its NeurIPS page, or an institution to open its page.' }),
         ...papers,
       ]),
     );
