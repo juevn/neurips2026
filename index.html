@@ -357,7 +357,7 @@ footer b { color: var(--ink); }
 (() => {
   'use strict';
   const D = window.NEURIPS, M = D.meta, A = M.areas, INST = D.inst, N = M.papers;
-  const REPO_URL = '{{REPO_URL}}';
+  const REPO_URL = 'https://github.com/juevn/neurips2026';
   const PVER = '593ded05fb';
   const $ = (s) => document.querySelector(s);
   const el = (tag, props = {}, kids = []) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (v == null) continue; if (k === 'style') e.style.cssText = v; else if (k === 'text') e.textContent = v; else if (k.startsWith('data-') || k.startsWith('aria-') || k === 'role') e.setAttribute(k, v); else e[k] = v; } for (const c of [].concat(kids)) if (c != null) e.append(c); return e; };
@@ -468,7 +468,7 @@ footer b { color: var(--ink); }
     const card = $('#card'); const tot = x.a.reduce((s, v) => s + v, 0) || 1;
     const tied = INST.filter(y => y.r === x.r).length > 1;
     const lifts = x.a.map((v, i) => (v / tot) / confShare[i]);
-    let sig = -1; x.a.forEach((v, i) => { if (v >= 3 && (sig < 0 || lifts[i] > lifts[sig])) sig = i; });
+    const minN = tot >= 50 ? 10 : 3; let sig = -1; x.a.forEach((v, i) => { if (v >= minN && (sig < 0 || lifts[i] > lifts[sig])) sig = i; });
     const noisy = x.p < 8;
     const chips = [];
     if (x.s) chips.push(el('span', { className: 'chip ' + x.s, text: x.s === 'I' ? 'Industry' : 'Academia' }));

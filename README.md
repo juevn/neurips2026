@@ -5,7 +5,7 @@ Two searches over the 5,629 accepted NeurIPS 2026 main-track papers:
 - **Find your institution.** Rank, paper count and research-area mix for every university, lab and company.
 - **Search by topic or paper.** Type a topic or paste an abstract. The page finds the closest papers by meaning and shows which universities and companies wrote the most of them.
 
-**Live page:** {{SITE_URL}}
+**Live page:** https://juevn.github.io/neurips2026/
 
 ![NeurIPS 2026 poster](assets/poster.png)
 
@@ -41,7 +41,7 @@ Two searches over the 5,629 accepted NeurIPS 2026 main-track papers:
 
 ## Corrections
 
-Found a wrong or split institution? Please [open an issue]({{REPO_URL}}/issues/new) with the institution name and what it should be.
+Found a wrong or split institution? Please [open an issue](https://github.com/juevn/neurips2026/issues/new) with the institution name and what it should be.
 
 ## Credit
 
