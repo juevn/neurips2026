@@ -208,6 +208,35 @@ td .nm { font-weight: 500; overflow-wrap: anywhere; }
 .paper .ar { font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; color: var(--muted); }
 .paper .ar i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
 
+
+/* Hi-Q topic trees */
+.hiq { margin-top: 18px; border: 2px solid color-mix(in srgb, var(--accent) 35%, var(--line)); border-radius: 22px; padding: 18px 18px 20px; background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 6%, var(--bg)), var(--bg) 140px); }
+.hiq .hhead { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.hiq .badge-hiq { font-weight: 700; font-size: 12.5px; letter-spacing: 1.5px; padding: 4px 10px; border-radius: 999px; color: #fff; background: var(--grad); }
+.hiq .ht { font-size: clamp(18px, 2.8vw, 22px); font-weight: 700; letter-spacing: -.3px; }
+.hiq .hmatch { color: var(--muted); font-size: 13.5px; }
+.hiq .hexp { color: var(--muted); font-size: 14px; margin: 8px 0 14px; }
+.hiq .hexp a { font-weight: 700; }
+.tnode { border: 1px solid var(--line); background: var(--bg); border-radius: 16px; padding: 12px 14px; }
+.tnode .tq { font-weight: 700; font-size: 16px; overflow-wrap: anywhere; }
+.tnode .tm { color: var(--muted); font-size: 13px; margin-top: 3px; }
+.tnode .st { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-right: 6px; vertical-align: 1px; }
+.st.resolved { background: color-mix(in srgb, #16a34a 16%, transparent); color: #16a34a; }
+.st.refined { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); }
+.st.split_rejected, .st.max_depth { background: var(--panel-2); color: var(--muted); }
+.st.unsupported { background: var(--panel-2); color: var(--faint); }
+.tnode .ti { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.tnode .ti button { all: unset; cursor: pointer; font-size: 12.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--panel); color: var(--muted); }
+.tnode .ti button.I { color: var(--ind); } .tnode .ti button.A { color: var(--aca); }
+.tnode .ti button:hover { text-decoration: underline; }
+.tnode details { margin-top: 8px; font-size: 13.5px; }
+.tnode summary { cursor: pointer; color: var(--accent); font-weight: 700; }
+.tnode details li { margin: 4px 0; color: var(--ink); }
+.tkids { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; position: relative; padding-top: 14px; }
+.tkids::before { content: ''; position: absolute; top: 0; left: 25%; right: 25%; height: 12px; border: 2px solid color-mix(in srgb, var(--accent) 40%, var(--line)); border-bottom: 0; border-radius: 10px 10px 0 0; }
+.browse { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 12px; color: var(--muted); font-size: 14px; }
+.browse select { max-width: 100%; }
+@media (max-width: 720px) { .tkids { grid-template-columns: 1fr; } .tkids::before { left: 12px; right: auto; width: 0; height: 12px; border-right: 0; border-radius: 0; } }
 section.about { margin-top: 44px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14.5px; }
 section.about h2 { color: var(--ink); font-size: 20px; margin: 0 0 8px; }
 section.about li { margin: 5px 0; }
@@ -323,7 +352,12 @@ footer b { color: var(--ink); }
       <select id="tk" aria-label="Number of closest papers"><option value="50">50</option><option value="100" selected>100</option><option value="200">200</option></select>
       <span>closest papers</span>
     </div>
+    <div class="browse" id="tbrowseWrap" hidden>
+      <span>Or browse topic trees built with <b>Hi-Q</b>:</span>
+      <select id="tbrowse" aria-label="Browse Hi-Q topic trees"><option value="">Choose a topic…</option></select>
+    </div>
     <div class="status" id="tstatus" role="status"></div>
+    <div id="thiq"></div>
     <div class="results" id="tres"></div>
   </section>
 
@@ -405,6 +439,8 @@ footer b { color: var(--ink); }
     }
     if (view === 'topics') {
       ensurePapers();
+      const tslug = new URLSearchParams(qs || '').get('t');
+      if (tslug) { ensurePapers().then(() => { const t = HQ && HQ.topics.find(x => x.slug === tslug); if (t) { $('#tq').value = t.topic; runTopic(t.topic, false); } }); return; }
       const qq = new URLSearchParams(qs || '').get('q');
       if (qq && qq !== lastTopicQuery) { $('#tq').value = qq; runTopic(qq, false); }
       else if (!qq) warmModel();
@@ -562,7 +598,9 @@ footer b { color: var(--ink); }
     }).then(() => fetch(`papers.bin?v=${PVER}`)).then(r => { if (!r.ok) throw new Error('papers.bin ' + r.status); return r.arrayBuffer(); }).then(buf => {
       P = window.PAPERS.rows; DIM = window.PAPERS.dim; const n = P.length;
       S = new Float32Array(buf, 0, n); V = new Int8Array(buf, n * 4, n * DIM);
-    });
+    }).then(() => new Promise((resolve) => {
+      const s = document.createElement('script'); s.src = `hiq.js?v=${PVER}`; s.onload = () => { initHiq(); resolve(); }; s.onerror = () => resolve(); document.head.append(s);
+    }));
     return papersReady;
   }
   function warmModel() {
@@ -578,6 +616,53 @@ footer b { color: var(--ink); }
       .catch(err => { console.warn(err); setStatus('Could not load the search model, so results use keyword matching on titles instead.'); extractor = null; return null; });
     return modelReady;
   }
+  /* ---------- Hi-Q topic trees ---------- */
+  let HQ = null;
+  const ST = { resolved: 'Resolved', refined: 'Refined into 2', split_rejected: 'Split rejected by verifier', unsupported: 'Too few papers', max_depth: 'Depth limit' };
+  const HIQ_URL = 'https://neurips.cc/virtual/2026/poster/155067';
+  function initHiq() {
+    if (!window.HIQ || !window.HIQ.topics.length) return;
+    HQ = window.HIQ;
+    const sel = $('#tbrowse');
+    HQ.topics.forEach((t, i) => sel.append(el('option', { value: t.slug, text: t.topic })));
+    sel.addEventListener('change', () => { const t = HQ.topics.find(x => x.slug === sel.value); if (t) { $('#tq').value = t.topic; runTopic(t.topic); } });
+    $('#tbrowseWrap').hidden = false;
+  }
+  function nearestTree(qv, text) {
+    if (!HQ) return null;
+    let best = -1, bi = -1;
+    if (qv) { HQ.vecs.forEach((v, i) => { let d = 0; for (let j = 0; j < v.length; j++) d += v[j] * qv[j]; if (d > best) { best = d; bi = i; } }); }
+    else { const qn = norm(text); HQ.topics.forEach((t, i) => { const w = norm(t.topic).split(' ').filter(x => x.length > 3); const d = w.filter(x => qn.includes(x)).length / Math.max(1, w.length); if (d > best) { best = d; bi = i; } }); }
+    return bi >= 0 ? { t: HQ.topics[bi], sim: best } : null;
+  }
+  function treeNode(n) {
+    const pctInd = n.n ? Math.round(100 * n.ind / n.n) : 0;
+    const kids = n.children && n.children.length ? el('div', { className: 'tkids' }, n.children.map(treeNode)) : null;
+    return el('div', {}, [
+      el('div', { className: 'tnode' }, [
+        el('div', { className: 'tq' }, [el('span', { className: 'st ' + n.status, text: ST[n.status] || n.status }), document.createTextNode(n.q)]),
+        el('div', { className: 'tm', text: n.n ? `${n.n} supporting paper${n.n === 1 ? '' : 's'} · ${pctInd}% with a company author${n.status === 'refined' && n.cov != null ? ` · children cover ${Math.round(n.cov * 100)}% of them` : ''}` : 'No supporting papers found' }),
+        n.insts.length ? el('div', { className: 'ti' }, n.insts.slice(0, 6).map(([k, c]) => el('button', { type: 'button', className: INST[k].s || '', text: `${INST[k].n} ${c}`, onclick: () => openInst(INST[k]) }))) : null,
+        n.papers.length ? el('details', {}, [el('summary', { text: `Papers (${Math.min(n.papers.length, 12)} of ${n.n})` }), el('ul', {}, n.papers.map(i => el('li', { text: P[i][0] })))]) : null,
+      ]),
+      kids,
+    ]);
+  }
+  function renderTree(match, how) {
+    const box = $('#thiq');
+    if (!match) { box.replaceChildren(); return; }
+    const t = match.t;
+    box.replaceChildren(el('section', { className: 'hiq', 'aria-label': 'Hi-Q topic tree' }, [
+      el('div', { className: 'hhead' }, [el('span', { className: 'badge-hiq', text: 'HI-Q TOPIC TREE' }), el('span', { className: 'ht', text: t.topic }), how ? el('span', { className: 'hmatch', text: how }) : null]),
+      el('p', { className: 'hexp' }, [
+        document.createTextNode('Built with '), el('a', { href: HIQ_URL, target: '_blank', rel: 'noopener', text: 'Hi-Q' }),
+        document.createTextNode(' (NeurIPS 2026), adapted from multi-hop QA to topics. An LLM checks which retrieved papers really support each topic. A topic is split in two only when its papers show distinct research directions, and a coverage verifier keeps the split only if the sub-topics cover the parent\u2019s papers. Counts use only those verified papers.'),
+        HQ.label ? el('b', { text: ` [${HQ.label}]` }) : null,
+      ]),
+      treeNode(t.tree),
+    ]));
+  }
+
   async function embed(text) {
     const words = text.trim().split(/\s+/).length;
     const input = words <= 24 ? 'Represent this sentence for searching relevant passages: ' + text : text;
@@ -598,12 +683,17 @@ footer b { color: var(--ink); }
       await ensurePapers();
       await warmModel();
       setStatus(`Searching ${fmt(P.length)} papers…`);
-      let sims, mode = 'semantic';
+      let sims, mode = 'semantic', qv = null;
       if (extractor) {
-        const qv = await embed(text);
+        qv = await embed(text);
         const n = P.length; sims = new Float32Array(n);
         for (let i = 0; i < n; i++) { let d = 0; const o = i * DIM; for (let j = 0; j < DIM; j++) d += V[o + j] * qv[j]; sims[i] = d * S[i]; }
       } else { sims = lexicalScores(text); mode = 'keyword'; }
+      const m = nearestTree(qv, text);
+      const short = text.trim().split(/\s+/).length <= 24;
+      const ok = m && (qv ? m.sim >= (short ? 0.80 : 0.72) : m.sim >= 0.6);
+      renderTree(ok ? m : null, ok && norm(m.t.topic) !== norm(text) ? `closest precomputed topic to your text (match ${(m.sim * 100).toFixed(0)})` : '');
+      if (ok && $('#tbrowse')) $('#tbrowse').value = m.t.slug;
       renderTopic(text, sims, mode);
       setStatus(mode === 'semantic' ? '' : 'Keyword matching on titles (search model unavailable).');
     } catch (e) { console.error(e); setStatus('Something went wrong: ' + e.message); }
