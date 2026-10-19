@@ -15,6 +15,7 @@ Two searches over the 5,629 accepted NeurIPS 2026 main-track papers:
 - `data.js`: institution-level totals.
 - `papers.js` + `papers.bin`: the topic-search index. Paper titles, the institutions on each paper and the research area, plus one 384-dimensional embedding per paper (int8, about 2 MB). No author names.
 - `neurips2026_institutions.csv`: the same table as a CSV.
+- `hiq.js`: 50 precomputed Hi-Q topic trees (labels, status, verified paper indices, top institutions per node).
 - `assets/poster.png`: the summary poster.
 
 ## Data
@@ -37,6 +38,7 @@ Two searches over the 5,629 accepted NeurIPS 2026 main-track papers:
 - **Research areas.** Not official tags. Titles and abstracts were embedded with `BAAI/bge-small-en-v1.5`, clustered with k-means (k=14), and the clusters were merged and named into 12 areas from their top terms. Borders between neighbouring areas such as LLMs, LLM agents and multimodal are fuzzy. With only a few papers, an institution's mix is noisy.
 - **Sector.** Companies and corporate labs are industry. Universities and public or non-profit institutes such as CAS, Max Planck, RIKEN, Shanghai AI Lab and Mila are academia.
 - **Topic search.** Runs entirely in the browser. The query is embedded with the same model used for the papers (`Xenova/bge-small-en-v1.5` via transformers.js, about 33 MB, downloaded once), compared with every paper, and the closest 50/100/200 papers are counted by institution. Nothing typed is sent to a server. If the model cannot load, the page falls back to keyword matching on titles.
+- **Hi-Q topic trees.** 50 topics were refined offline with [Hi-Q](https://neurips.cc/virtual/2026/poster/155067) (NeurIPS 2026), adapted from multi-hop QA to topic exploration. The run reuses Hi-Q's retriever, LLM wrapper and recursive solve/resolve/decompose loop (gpt-4o-mini, text-embedding-3-large). Each node retrieves 80 papers; an LLM checks each paper (batches of 20) and keeps only those really about the node. The resolution operator lists the research directions in that evidence; a node is split only if at least two directions have 3+ papers. The binary operator proposes two sub-topics, and the coverage verifier assigns the parent's papers to them and keeps the split only if they cover at least half and each gets 3+. Splits that restate the parent or a sibling are rejected. Depth is capped at 2. A parent's count includes the papers its sub-topics found. Total cost about $0.5. Trees are shown directly for the 50 topics; for other queries the page suggests related trees whose verified papers overlap the query's 50 closest papers.
 - **Privacy.** No author names are published. The topic index contains paper titles and the institutions on each paper, which are public in the NeurIPS program.
 
 ## Corrections

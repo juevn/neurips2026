@@ -387,7 +387,7 @@ footer b { color: var(--ink); }
   'use strict';
   const D = window.NEURIPS, M = D.meta, A = M.areas, INST = D.inst, N = M.papers;
   const REPO_URL = '{{REPO_URL}}';
-  const PVER = '6f9b6003cc';
+  const PVER = '52af7eff51';
   const $ = (s) => document.querySelector(s);
   const el = (tag, props = {}, kids = []) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (v == null) continue; if (k === 'style') e.style.cssText = v; else if (k === 'text') e.textContent = v; else if (k.startsWith('data-') || k.startsWith('aria-') || k === 'role') e.setAttribute(k, v); else e[k] = v; } for (const c of [].concat(kids)) if (c != null) e.append(c); return e; };
   const fmt = (x) => x.toLocaleString('en-US');
@@ -628,25 +628,29 @@ footer b { color: var(--ink); }
     sel.addEventListener('change', () => { const t = HQ.topics.find(x => x.slug === sel.value); if (t) { $('#tq').value = t.topic; runTopic(t.topic); } });
     $('#tbrowseWrap').hidden = false;
   }
-  function nearestTree(qv, text) {
-    if (!HQ) return null;
-    let best = -1, bi = -1;
-    if (qv) { HQ.vecs.forEach((v, i) => { let d = 0; for (let j = 0; j < v.length; j++) d += v[j] * qv[j]; if (d > best) { best = d; bi = i; } }); }
-    else { const qn = norm(text); HQ.topics.forEach((t, i) => { const w = norm(t.topic).split(' ').filter(x => x.length > 3); const d = w.filter(x => qn.includes(x)).length / Math.max(1, w.length); if (d > best) { best = d; bi = i; } }); }
-    return bi >= 0 ? { t: HQ.topics[bi], sim: best } : null;
-  }
   function treeNode(n) {
     const pctInd = n.n ? Math.round(100 * n.ind / n.n) : 0;
     const kids = n.children && n.children.length ? el('div', { className: 'tkids' }, n.children.map(treeNode)) : null;
     return el('div', {}, [
       el('div', { className: 'tnode' }, [
-        el('div', { className: 'tq' }, [el('span', { className: 'st ' + n.status, text: ST[n.status] || n.status }), document.createTextNode(n.q)]),
+        el('div', { className: 'tq', title: n.text ? `${n.text}\nSearch phrase: ${n.q}` : `Search phrase: ${n.q}` }, [el('span', { className: 'st ' + n.status, text: ST[n.status] || n.status }), document.createTextNode(n.label || n.q)]),
         el('div', { className: 'tm', text: n.n ? `${n.n} supporting paper${n.n === 1 ? '' : 's'} · ${pctInd}% with a company author${n.status === 'refined' && n.cov != null ? ` · children cover ${Math.round(n.cov * 100)}% of them` : ''}` : 'No supporting papers found' }),
         n.insts.length ? el('div', { className: 'ti' }, n.insts.slice(0, 6).map(([k, c]) => el('button', { type: 'button', className: INST[k].s || '', text: `${INST[k].n} ${c}`, onclick: () => openInst(INST[k]) }))) : null,
         n.papers.length ? el('details', {}, [el('summary', { text: `Papers (${Math.min(n.papers.length, 12)} of ${n.n})` }), el('ul', {}, n.papers.map(i => el('li', { text: P[i][0] })))]) : null,
       ]),
       kids,
     ]);
+  }
+  function suggestTrees(sims) {
+    const box = $('#thiq'); if (!HQ || !HQ.topics[0].all) return;
+    const top = new Set(Array.from(sims.keys()).sort((a, b) => sims[b] - sims[a]).slice(0, 50));
+    const scored = HQ.topics.map(t => [t, t.all.reduce((c, i) => c + (top.has(i) ? 1 : 0), 0) / 50]).filter(x => x[1] >= 0.24).sort((a, b) => b[1] - a[1]).slice(0, 2);
+    if (!scored.length) { box.replaceChildren(); return; }
+    box.replaceChildren(el('div', { className: 'browse' }, [
+      el('span', { className: 'badge-hiq', style: 'font-size:11.5px;letter-spacing:1.2px;padding:3px 9px;border-radius:999px;color:#fff;background:var(--grad);font-weight:700', text: 'HI-Q' }),
+      el('span', { text: 'Related topic trees:' }),
+      ...scored.map(([t, o]) => el('button', { className: 'chipbtn', type: 'button', text: t.topic, title: `${Math.round(o * 100)}% of your 50 closest papers are in this tree`, onclick: () => { $('#tq').value = t.topic; runTopic(t.topic); } })),
+    ]));
   }
   function renderTree(match, how) {
     const box = $('#thiq');
@@ -689,11 +693,11 @@ footer b { color: var(--ink); }
         const n = P.length; sims = new Float32Array(n);
         for (let i = 0; i < n; i++) { let d = 0; const o = i * DIM; for (let j = 0; j < DIM; j++) d += V[o + j] * qv[j]; sims[i] = d * S[i]; }
       } else { sims = lexicalScores(text); mode = 'keyword'; }
-      const m = nearestTree(qv, text);
-      const short = text.trim().split(/\s+/).length <= 24;
-      const ok = m && (qv ? m.sim >= (short ? 0.80 : 0.72) : m.sim >= 0.6);
-      renderTree(ok ? m : null, ok && norm(m.t.topic) !== norm(text) ? `closest precomputed topic to your text (match ${(m.sim * 100).toFixed(0)})` : '');
-      if (ok && $('#tbrowse')) $('#tbrowse').value = m.t.slug;
+      // a tree is shown directly only for one of the precomputed topics; other queries get evidence-based suggestions
+      const exact = HQ && HQ.topics.find(t => norm(t.topic) === norm(text));
+      renderTree(exact ? { t: exact } : null, '');
+      if ($('#tbrowse')) $('#tbrowse').value = exact ? exact.slug : '';
+      if (!exact) suggestTrees(sims);
       renderTopic(text, sims, mode);
       setStatus(mode === 'semantic' ? '' : 'Keyword matching on titles (search model unavailable).');
     } catch (e) { console.error(e); setStatus('Something went wrong: ' + e.message); }
