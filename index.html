@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NeurIPS 2026 Institutions</title>
-<meta name="description" content="Find your institution: accepted NeurIPS 2026 main-track papers by institution, with each institution's research-area mix.">
-<meta property="og:title" content="NeurIPS 2026: find your institution">
-<meta property="og:description" content="5,629 accepted papers, 3,000+ institutions. Rank, paper count and research-area mix for every institution.">
+<title>NeurIPS 2026 Explorer</title>
+<meta name="description" content="Search NeurIPS 2026 by institution, or by topic and paper: which universities and companies publish the most on it.">
+<meta property="og:title" content="NeurIPS 2026 Explorer">
+<meta property="og:description" content="5,629 accepted papers. Find your institution, or find who publishes the most on your topic.">
 <meta property="og:image" content="assets/poster.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,6 +16,7 @@
 :root {
   --bg: #ffffff; --panel: #f5f6f8; --panel-2: #eef0f4; --line: #e5e7eb; --ink: #111827; --muted: #6b7280; --faint: #9ca3af;
   --aca: #2563eb; --ind: #ea580c; --accent: #4f46e5; --hl: #fff7ed; --shadow: 0 10px 30px rgba(17,24,39,.08);
+  --grad: linear-gradient(92deg, #2563eb 0%, #7c3aed 50%, #ea580c 100%);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -31,34 +32,91 @@
 html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Google Sans', system-ui, -apple-system, 'Segoe UI', sans-serif; }
 body { line-height: 1.45; -webkit-font-smoothing: antialiased; }
 a { color: var(--accent); }
-.wrap { max-width: 980px; margin: 0 auto; padding: 28px 16px 64px; }
-header .title { font-family: 'Google Sans Display', 'Google Sans', sans-serif; font-weight: 700; letter-spacing: -2px; line-height: .95; font-size: clamp(48px, 11vw, 96px); margin: 0; }
-header .title .n { background: linear-gradient(92deg, #2563eb 0%, #7c3aed 50%, #ea580c 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-header .title .y { color: transparent; -webkit-text-stroke: 2px var(--ink); margin-left: .12em; }
-header h1 { font-size: clamp(22px, 4.2vw, 30px); margin: 14px 0 4px; letter-spacing: -.3px; }
-header p.sub { color: var(--muted); margin: 0; font-size: 16px; }
-.search { position: relative; margin: 22px 0 8px; }
-.search input { width: 100%; font: inherit; font-size: 19px; padding: 16px 18px 16px 50px; border-radius: 16px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); outline: none; transition: border-color .15s; }
-.search input:focus { border-color: var(--accent); background: var(--bg); }
-.search svg { position: absolute; left: 17px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: var(--faint); }
+button { font-family: inherit; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 16px 64px; }
+
+/* top bar */
+.topbar { position: sticky; top: 0; z-index: 30; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.topbar .in { max-width: 980px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 14px; }
+.brand { all: unset; cursor: pointer; font-family: 'Google Sans Display', 'Google Sans', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -.5px; white-space: nowrap; }
+.brand .n { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.brand .y { margin-left: 4px; color: transparent; -webkit-text-stroke: 1.2px var(--ink); }
+.tabs { display: flex; gap: 4px; margin-left: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 4px; }
+.tabs a { text-decoration: none; color: var(--muted); font-weight: 700; font-size: 14.5px; padding: 7px 14px; border-radius: 9px; white-space: nowrap; }
+.tabs a[aria-current="page"] { background: var(--bg); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+
+.view { display: none; padding-top: 28px; }
+.view.on { display: block; }
+
+/* home */
+.hero { text-align: center; padding: 40px 0 10px; }
+.hero .title { font-family: 'Google Sans Display', 'Google Sans', sans-serif; font-weight: 700; letter-spacing: -3px; line-height: .95; font-size: clamp(56px, 13vw, 128px); margin: 0; }
+.hero .title .n { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero .title .y { color: transparent; -webkit-text-stroke: 2.5px var(--ink); margin-left: .1em; }
+.hero p { color: var(--muted); font-size: clamp(17px, 2.4vw, 21px); margin: 16px auto 0; max-width: 640px; }
+.stats { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin: 22px 0 6px; }
+.stats div { text-align: center; }
+.stats b { display: block; font-size: 28px; letter-spacing: -.5px; }
+.stats span { color: var(--muted); font-size: 14px; }
+.doors { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 34px; }
+.door { all: unset; box-sizing: border-box; cursor: pointer; display: flex; flex-direction: column; gap: 12px; padding: 28px; border-radius: 26px; border: 2px solid var(--line); background: var(--panel); transition: transform .15s, border-color .15s, box-shadow .15s; min-height: 250px; }
+.door:hover, .door:focus-visible { transform: translateY(-3px); box-shadow: var(--shadow); }
+.door.inst:hover, .door.inst:focus-visible { border-color: var(--aca); }
+.door.topic:hover, .door.topic:focus-visible { border-color: var(--ind); }
+.door .ic { width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; }
+.door.inst .ic { background: color-mix(in srgb, var(--aca) 14%, transparent); color: var(--aca); }
+.door.topic .ic { background: color-mix(in srgb, var(--ind) 14%, transparent); color: var(--ind); }
+.door .ic svg { width: 28px; height: 28px; }
+.door h2 { margin: 4px 0 0; font-size: clamp(24px, 3.4vw, 30px); letter-spacing: -.5px; }
+.door p { margin: 0; color: var(--muted); font-size: 16px; }
+.door .eg { margin-top: auto; font-size: 14px; color: var(--faint); }
+.door .go { font-weight: 700; font-size: 16px; display: inline-flex; align-items: center; gap: 6px; }
+.door.inst .go { color: var(--aca); } .door.topic .go { color: var(--ind); }
+.homefoot { margin-top: 34px; text-align: center; color: var(--muted); font-size: 14px; }
+.poster { display: block; margin: 30px auto 0; max-width: 520px; width: 100%; border-radius: 18px; border: 1px solid var(--line); }
+
+/* shared */
+h1.vt { font-size: clamp(26px, 4.6vw, 36px); margin: 0 0 4px; letter-spacing: -.6px; }
+p.vs { color: var(--muted); margin: 0; font-size: 16px; }
+.search { position: relative; margin: 20px 0 8px; }
+.search input, .search textarea { width: 100%; font: inherit; font-size: 18px; padding: 16px 18px 16px 50px; border-radius: 16px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); outline: none; transition: border-color .15s; }
+.search textarea { padding-left: 18px; resize: vertical; min-height: 64px; max-height: 320px; line-height: 1.45; }
+.search input:focus, .search textarea:focus { border-color: var(--accent); background: var(--bg); }
+.search > svg { position: absolute; left: 17px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: var(--faint); }
 .suggest { position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + 6px); background: var(--bg); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; display: none; }
 .suggest.open { display: block; }
 .suggest button { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 12px; padding: 11px 16px; cursor: pointer; }
 .suggest button[aria-selected="true"], .suggest button:hover { background: var(--panel); }
-.suggest .r { color: var(--faint); font-weight: 700; min-width: 44px; font-size: 14px; }
+.suggest .r { color: var(--faint); font-weight: 700; min-width: 48px; font-size: 14px; }
 .suggest .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .suggest .pp { color: var(--muted); font-size: 14px; }
-.hint { color: var(--faint); font-size: 14px; margin: 0 4px; }
-.hint button { all: unset; cursor: pointer; color: var(--accent); margin: 0 2px; }
+.hint { color: var(--faint); font-size: 14px; margin: 0 4px; display: flex; flex-wrap: wrap; gap: 6px 4px; align-items: center; }
+.hint button { all: unset; cursor: pointer; color: var(--accent); }
 .hint button:hover { text-decoration: underline; }
-
-.card { margin-top: 22px; background: var(--panel); border-radius: 22px; padding: 24px; border: 1px solid var(--line); display: none; }
-.card.show { display: block; }
-.card .top { display: flex; gap: 16px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
-.card h2 { margin: 0; font-size: clamp(22px, 4vw, 30px); letter-spacing: -.4px; line-height: 1.15; overflow-wrap: anywhere; }
+.chipbtn { all: unset; cursor: pointer; font-size: 14px; padding: 6px 12px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); color: var(--ink); }
+.hint .chipbtn { font-size: 14px; padding: 6px 12px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); color: var(--ink); }
+.hint .chipbtn:hover { border-color: var(--accent); text-decoration: none; }
+.chipbtn:hover { border-color: var(--accent); }
 .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
 .chip { font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: var(--panel-2); color: var(--muted); }
 .chip.A { color: var(--aca); } .chip.I { color: var(--ind); }
+.btn { font: inherit; font-size: 15px; font-weight: 700; padding: 10px 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+.btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn:disabled { opacity: .5; cursor: default; }
+.seg { display: inline-flex; background: var(--panel); border-radius: 12px; padding: 4px; border: 1px solid var(--line); }
+.seg button { all: unset; cursor: pointer; padding: 7px 12px; border-radius: 9px; font-size: 14px; font-weight: 700; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--bg); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+select { font: inherit; font-size: 14px; font-weight: 700; padding: 9px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-weight: 700; font-size: 14px; opacity: 0; transition: .2s; pointer-events: none; z-index: 50; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.areas-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; color: var(--muted); font-size: 13px; margin-top: 10px; }
+.areas-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+
+/* institution card */
+.card { margin-top: 22px; background: var(--panel); border-radius: 22px; padding: 24px; border: 1px solid var(--line); display: none; scroll-margin-top: 80px; }
+.card.show { display: block; }
+.card .top { display: flex; gap: 16px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+.card h2 { margin: 0; font-size: clamp(22px, 4vw, 30px); letter-spacing: -.4px; line-height: 1.15; overflow-wrap: anywhere; }
 .rankbox { text-align: right; }
 .rankbox .rk { font-size: 54px; font-weight: 700; letter-spacing: -2px; line-height: 1; }
 .rankbox .of { color: var(--muted); font-size: 14px; }
@@ -86,20 +144,14 @@ header p.sub { color: var(--muted); margin: 0; font-size: 16px; }
 .legendline { display: flex; gap: 16px; flex-wrap: wrap; color: var(--muted); font-size: 13px; margin-top: 10px; }
 .legendline .tick { display: inline-block; width: 2px; height: 12px; background: var(--ink); opacity: .55; vertical-align: -2px; margin-right: 6px; }
 .share { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
-.btn { font: inherit; font-size: 15px; font-weight: 700; padding: 10px 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
-.btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-.btn:hover { filter: brightness(1.05); }
 
+/* institution table */
 section.table { margin-top: 40px; }
 section.table h2 { font-size: 24px; margin: 0 0 6px; letter-spacing: -.3px; }
 .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 12px 0; }
-.seg { display: inline-flex; background: var(--panel); border-radius: 12px; padding: 4px; border: 1px solid var(--line); }
-.seg button { all: unset; cursor: pointer; padding: 7px 12px; border-radius: 9px; font-size: 14px; font-weight: 700; color: var(--muted); }
-.seg button[aria-pressed="true"] { background: var(--bg); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
-select { font: inherit; font-size: 14px; font-weight: 700; padding: 9px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
 .count { color: var(--muted); font-size: 14px; margin-left: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 15px; }
-th { text-align: left; font-size: 12.5px; letter-spacing: .6px; text-transform: uppercase; color: var(--faint); font-weight: 700; padding: 8px 8px; border-bottom: 1px solid var(--line); }
+th { text-align: left; font-size: 12.5px; letter-spacing: .6px; text-transform: uppercase; color: var(--faint); font-weight: 700; padding: 8px; border-bottom: 1px solid var(--line); }
 td { padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
 tr.row { cursor: pointer; }
 tr.row:hover td { background: var(--panel); }
@@ -109,21 +161,62 @@ td.pct, th.pct { text-align: right; width: 70px; color: var(--muted); }
 td.mix { width: 34%; }
 td .mini { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: var(--panel-2); }
 td .nm { font-weight: 500; overflow-wrap: anywhere; }
-td .tag { font-size: 11.5px; font-weight: 700; margin-left: 6px; }
-td .tag.I { color: var(--ind); } td .tag.A { color: var(--aca); }
+.tag { font-size: 11.5px; font-weight: 700; margin-left: 6px; }
+.tag.I { color: var(--ind); } .tag.A { color: var(--aca); }
 .more { display: block; margin: 16px auto 0; }
-.areas-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; color: var(--muted); font-size: 13px; margin-top: 10px; }
-.areas-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+
+/* topic search */
+.qrow { display: flex; gap: 10px; align-items: flex-start; margin-top: 18px; }
+.qrow .search { flex: 1; margin: 0; }
+.qrow .btn { height: 64px; padding: 0 22px; font-size: 16px; }
+.opts { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 12px 0 0; color: var(--muted); font-size: 14px; }
+.status { margin-top: 14px; color: var(--muted); font-size: 14px; display: flex; align-items: center; gap: 10px; min-height: 22px; }
+.status .pbar { width: 160px; height: 6px; border-radius: 3px; background: var(--panel-2); overflow: hidden; }
+.status .pbar i { display: block; height: 100%; width: 0; background: var(--grad); transition: width .2s; }
+.results { margin-top: 18px; display: none; }
+.results.show { display: block; }
+.summary { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 18px 20px; }
+.summary .big { font-size: clamp(19px, 3vw, 23px); font-weight: 700; letter-spacing: -.3px; overflow-wrap: anywhere; }
+.summary .big .q { color: var(--accent); }
+.summary .sub { color: var(--muted); font-size: 14.5px; margin-top: 4px; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+.side { border-radius: 20px; padding: 18px 18px 12px; border: 2px solid var(--line); }
+.side.A { border-color: color-mix(in srgb, var(--aca) 35%, var(--line)); }
+.side.I { border-color: color-mix(in srgb, var(--ind) 35%, var(--line)); }
+.side h3 { margin: 0 0 10px; font-size: 14px; letter-spacing: 3px; font-weight: 700; }
+.side.A h3 { color: var(--aca); } .side.I h3 { color: var(--ind); }
+.irow { display: grid; grid-template-columns: 26px 1fr auto; gap: 8px; align-items: center; padding: 7px 0; border-bottom: 1px dashed var(--line); cursor: pointer; }
+.irow:last-child { border-bottom: 0; }
+.irow:hover .in { text-decoration: underline; }
+.irow .rk { color: var(--faint); font-weight: 700; font-size: 14px; }
+.irow .in { font-weight: 500; overflow-wrap: anywhere; font-size: 15.5px; }
+.irow .barwrap { display: flex; align-items: center; gap: 8px; }
+.irow .b { height: 8px; border-radius: 4px; }
+.side.A .b { background: var(--aca); } .side.I .b { background: var(--ind); }
+.irow .v { font-weight: 700; font-size: 15px; min-width: 22px; text-align: right; }
+.empty { color: var(--faint); font-size: 14px; padding: 8px 0; }
+.blk { margin-top: 26px; }
+.blk h3 { margin: 0 0 4px; font-size: 19px; letter-spacing: -.2px; }
+.blk .note { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
+.paper { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.paper .t { font-weight: 500; font-size: 15.5px; }
+.paper .meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; }
+.paper .sim { font-size: 12.5px; font-weight: 700; color: var(--faint); margin-right: 4px; }
+.paper .ia { all: unset; cursor: pointer; font-size: 12.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--panel-2); color: var(--muted); }
+.paper .ia.I { color: var(--ind); } .paper .ia.A { color: var(--aca); }
+.paper .ia:hover { text-decoration: underline; }
+.paper .ar { font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; color: var(--muted); }
+.paper .ar i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
 
 section.about { margin-top: 44px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14.5px; }
 section.about h2 { color: var(--ink); font-size: 20px; margin: 0 0 8px; }
 section.about li { margin: 5px 0; }
 footer { margin-top: 26px; color: var(--muted); font-size: 14px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 footer b { color: var(--ink); }
-.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-weight: 700; font-size: 14px; opacity: 0; transition: .2s; pointer-events: none; }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-@media (max-width: 640px) {
+@media (max-width: 720px) {
+  .doors, .split { grid-template-columns: 1fr; }
+  .door { min-height: 0; padding: 22px; }
   .metrics { grid-template-columns: 1fr 1fr; }
   .metrics .metric:last-child { grid-column: span 2; }
   .rankbox { text-align: left; }
@@ -131,62 +224,126 @@ footer b { color: var(--ink); }
   .arow .bar { display: none; }
   td.mix, th.mix, td.pct, th.pct { display: none; }
   .count { margin-left: 0; width: 100%; }
+  .topbar .brand .y { display: none; }
+  .tabs a { padding: 7px 10px; font-size: 14px; }
+  .qrow { flex-direction: column; align-items: stretch; }
+  .qrow .btn { width: 100%; height: 50px; justify-content: center; }
 }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <p class="title"><span class="n">NeurIPS</span><span class="y">2026</span></p>
-    <h1>Find your institution</h1>
-    <p class="sub" id="sub">Accepted main-track papers by institution, and what each institution publishes.</p>
-  </header>
-
-  <div class="search" role="combobox" aria-haspopup="listbox" aria-owns="suggest" aria-expanded="false" id="combo">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-    <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="Search a university, lab or company…" aria-label="Search institutions" aria-controls="suggest" aria-autocomplete="list">
-    <div class="suggest" id="suggest" role="listbox"></div>
-  </div>
-  <p class="hint">Try <button data-q="KAIST">KAIST</button> · <button data-q="Google">Google</button> · <button data-q="ETH Zurich">ETH Zurich</button> · <button data-q="Tsinghua">Tsinghua</button></p>
-
-  <article class="card" id="card" aria-live="polite"></article>
-
-  <section class="table">
-    <h2>All institutions</h2>
-    <div class="controls">
-      <div class="seg" role="group" aria-label="Sector">
-        <button data-sector="" aria-pressed="true">All</button>
-        <button data-sector="A" aria-pressed="false">Academia</button>
-        <button data-sector="I" aria-pressed="false">Industry</button>
-      </div>
-      <select id="sortArea" aria-label="Rank by research area"><option value="">Rank by all papers</option></select>
-      <span class="count" id="count"></span>
+<nav class="topbar" aria-label="Main">
+  <div class="in">
+    <a class="brand" href="#/" aria-label="Home"><span class="n">NeurIPS</span><span class="y">2026</span></a>
+    <div class="tabs">
+      <a href="#/institutions" data-tab="institutions">Institutions</a>
+      <a href="#/topics" data-tab="topics">Topics &amp; papers</a>
     </div>
-    <table>
-      <thead><tr><th class="r">#</th><th>Institution</th><th class="p">Papers</th><th class="pct">Share</th><th class="mix">Research-area mix</th></tr></thead>
-      <tbody id="tbody"></tbody>
-    </table>
-    <button class="btn more" id="more">Show 50 more</button>
-    <div class="areas-legend" id="areasLegend"></div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <!-- ======================= HOME ======================= -->
+  <section class="view" id="v-home" aria-label="Home">
+    <div class="hero">
+      <p class="title"><span class="n">NeurIPS</span><span class="y">2026</span></p>
+      <p>Who wrote the accepted papers, and who works on what. Two ways in:</p>
+      <div class="stats" id="stats"></div>
+    </div>
+    <div class="doors">
+      <a class="door inst" href="#/institutions">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10 12 5l9 5"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8"/><path d="M3 20h18"/></svg></span>
+        <h2>Find your institution</h2>
+        <p>Rank, paper count and research-area mix for every university, lab and company at NeurIPS 2026.</p>
+        <span class="eg">e.g. KAIST · Google · ETH Zurich · Tsinghua</span>
+        <span class="go">Search institutions →</span>
+      </a>
+      <a class="door topic" href="#/topics">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><circle cx="11" cy="14" r="2.6"/><path d="m13 16 2 2"/></svg></span>
+        <h2>Search by topic or paper</h2>
+        <p>Type a topic or paste your abstract. See which universities and companies published the most papers like it.</p>
+        <span class="eg">e.g. retrieval-augmented generation · protein design · your abstract</span>
+        <span class="go">Search topics →</span>
+      </a>
+    </div>
+    <img class="poster" src="assets/poster.png" alt="NeurIPS 2026 summary poster: academia vs industry, research areas, top institutions" loading="lazy">
+    <p class="homefoot">Made by <b>Jueun Kim</b> (POSTECH) · <a href="https://x.com/jueun_kim_" rel="noopener">@jueun_kim_</a></p>
   </section>
 
-  <section class="about">
+  <!-- ======================= INSTITUTIONS ======================= -->
+  <section class="view" id="v-institutions" aria-label="Institutions">
+    <h1 class="vt">Find your institution</h1>
+    <p class="vs" id="instSub">Accepted main-track papers by institution, and what each institution publishes.</p>
+    <div class="search" role="combobox" aria-haspopup="listbox" aria-owns="suggest" aria-expanded="false" id="combo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="Search a university, lab or company…" aria-label="Search institutions" aria-controls="suggest" aria-autocomplete="list">
+      <div class="suggest" id="suggest" role="listbox"></div>
+    </div>
+    <p class="hint">Try <button data-q="KAIST">KAIST</button>·<button data-q="Google">Google</button>·<button data-q="ETH Zurich">ETH Zurich</button>·<button data-q="Tsinghua">Tsinghua</button></p>
+    <article class="card" id="card" aria-live="polite"></article>
+    <section class="table">
+      <h2>All institutions</h2>
+      <div class="controls">
+        <div class="seg" role="group" aria-label="Sector" id="instSeg">
+          <button data-sector="" aria-pressed="true">All</button>
+          <button data-sector="A" aria-pressed="false">Academia</button>
+          <button data-sector="I" aria-pressed="false">Industry</button>
+        </div>
+        <select id="sortArea" aria-label="Rank by research area"><option value="">Rank by all papers</option></select>
+        <span class="count" id="count"></span>
+      </div>
+      <table>
+        <thead><tr><th class="r">#</th><th>Institution</th><th class="p">Papers</th><th class="pct">Share</th><th class="mix">Research-area mix</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <button class="btn more" id="more">Show 50 more</button>
+      <div class="areas-legend" id="areasLegend"></div>
+    </section>
+  </section>
+
+  <!-- ======================= TOPICS ======================= -->
+  <section class="view" id="v-topics" aria-label="Topics and papers">
+    <h1 class="vt">Who publishes on your topic?</h1>
+    <p class="vs">Type a topic or paste a title and abstract. We find the NeurIPS 2026 papers closest in meaning, then count which institutions wrote them.</p>
+    <div class="qrow">
+      <div class="search">
+        <textarea id="tq" rows="2" spellcheck="false" placeholder="e.g. retrieval-augmented generation for multi-hop question answering — or paste your abstract" aria-label="Topic or abstract"></textarea>
+      </div>
+      <button class="btn primary" id="tgo" type="button">Search</button>
+    </div>
+    <div class="hint" id="tex">Try
+      <button class="chipbtn" data-t="retrieval-augmented generation">retrieval-augmented generation</button>
+      <button class="chipbtn" data-t="LLM agents for software engineering">LLM agents for software engineering</button>
+      <button class="chipbtn" data-t="diffusion models for protein design">diffusion models for protein design</button>
+      <button class="chipbtn" data-t="mechanistic interpretability of language models">mechanistic interpretability</button>
+      <button class="chipbtn" data-t="vision-language-action models for robot manipulation">VLA for robots</button>
+    </div>
+    <div class="opts">
+      <span>Look at the</span>
+      <select id="tk" aria-label="Number of closest papers"><option value="50">50</option><option value="100" selected>100</option><option value="200">200</option></select>
+      <span>closest papers</span>
+    </div>
+    <div class="status" id="tstatus" role="status"></div>
+    <div class="results" id="tres"></div>
+  </section>
+
+  <section class="about" id="about">
     <h2>How this was made</h2>
     <ul>
-      <li><b>Papers and institutions</b> come from the official neurips.cc program data, which lists each author's institution from their OpenReview profile. Main track only.</li>
+      <li><b>Papers and institutions</b> come from the official neurips.cc program data, which lists each author's institution from their OpenReview profile. Main track only, snapshot <span class="snap"></span>.</li>
       <li><b>Counting:</b> a paper counts once for every institution with at least one author on it, so shares add up to more than 100%. The <i>fractional</i> count splits each paper equally across its authors, then across each author's institutions.</li>
-      <li><b>Ranks</b> are by paper count; institutions with the same count share a rank.</li>
-      <li><b>Names</b> are normalized with a hand-checked table of about 380 institutions. Google includes DeepMind, Meta includes FAIR, all Chinese Academy of Sciences institutes are merged, HKUST and HKUST (Guangzhou) are separate. Less common names are grouped by their exact spelling, so a small institution may appear under more than one name.</li>
-      <li><b>Research areas</b> are not official tags. Titles and abstracts were embedded (bge-small) and clustered (k-means), then the clusters were named from their top terms. Each paper has exactly one area, and the borders between neighbouring areas are fuzzy. For institutions with only a few papers, the mix is noisy.</li>
+      <li><b>Names</b> are normalized with a hand-checked table of about 380 institutions plus rules for typos, sub-units and acronyms. Google includes DeepMind, Meta includes FAIR, all Chinese Academy of Sciences institutes are merged, HKUST and HKUST (Guangzhou) are separate. Less common names may still appear under more than one spelling.</li>
+      <li><b>Research areas</b> are not official tags. Titles and abstracts were embedded with bge-small-en-v1.5 and clustered, then the clusters were named from their top terms. Borders between neighbouring areas are fuzzy.</li>
+      <li><b>Topic search</b> runs entirely in your browser: your text is embedded with the same model (downloaded once, about 33 MB) and compared with every paper. Nothing you type is sent anywhere.</li>
       <li><b>Industry vs academia:</b> companies and corporate labs are industry. Universities and public or non-profit institutes such as CAS, Max Planck, RIKEN, Shanghai AI Lab and Mila are academia.</li>
-      <li>Only institution-level totals are published here. <a href="neurips2026_institutions.csv" download>Download the full table (CSV)</a>.</li>
+      <li>No author names are included. <a href="neurips2026_institutions.csv" download>Download the institution table (CSV)</a>.</li>
       <li id="fix">Spotted a wrong mapping? Corrections are welcome.</li>
     </ul>
+    <footer>
+      <span>Made by <b>Jueun Kim</b> (POSTECH) · <a href="https://x.com/jueun_kim_" rel="noopener">@jueun_kim_</a></span>
+      <span>Data snapshot <span class="snap"></span></span>
+    </footer>
   </section>
-  <footer>
-    <span>Made by <b>Jueun Kim</b> (POSTECH) · <a href="https://x.com/jueun_kim_" rel="noopener">@jueun_kim_</a></span>
-    <span id="snap"></span>
-  </footer>
 </div>
 <div class="toast" id="toast" role="status"></div>
 
@@ -195,41 +352,76 @@ footer b { color: var(--ink); }
 (() => {
   'use strict';
   const D = window.NEURIPS, M = D.meta, A = M.areas, INST = D.inst, N = M.papers;
-  const isDark = () => document.documentElement.dataset.theme === 'dark' || (document.documentElement.dataset.theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
-  if (isDark()) A.forEach(a => { if (a.color.toLowerCase() === '#2b2d42') a.color = '#8d99c4'; });
   const REPO_URL = '{{REPO_URL}}';
+  const PVER = '6f9b6003cc';
   const $ = (s) => document.querySelector(s);
-  const el = (tag, props = {}, kids = []) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (k === 'style') e.style.cssText = v; else if (k === 'text') e.textContent = v; else if (k.startsWith('data-') || k.startsWith('aria-') || k === 'role') e.setAttribute(k, v); else e[k] = v; } for (const c of [].concat(kids)) if (c != null) e.append(c); return e; };
+  const el = (tag, props = {}, kids = []) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (v == null) continue; if (k === 'style') e.style.cssText = v; else if (k === 'text') e.textContent = v; else if (k.startsWith('data-') || k.startsWith('aria-') || k === 'role') e.setAttribute(k, v); else e[k] = v; } for (const c of [].concat(kids)) if (c != null) e.append(c); return e; };
   const fmt = (x) => x.toLocaleString('en-US');
   const pct = (x, d = 1) => (x * 100).toFixed(d) + '%';
   const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/&/g, ' and ').replace(/[^a-z0-9぀-鿿]+/g, ' ').trim();
   const slug = (s) => norm(s).replace(/ /g, '-');
   const flag = (cc) => cc && cc.length === 2 ? String.fromCodePoint(...[...cc.toUpperCase()].map(c => 127397 + c.charCodeAt(0))) : '';
+  const isDark = () => document.documentElement.dataset.theme === 'dark' || (document.documentElement.dataset.theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+  if (isDark()) A.forEach(a => { if (a.color.toLowerCase() === '#2b2d42') a.color = '#8d99c4'; });
   const confShare = A.map(a => a.total / N);
-
   INST.forEach((x, i) => { x.i = i; x.slug = slug(x.n); x.keys = [x.n, ...(x.k || [])].map(norm); });
   const bySlug = new Map(INST.map(x => [x.slug, x]));
+  let tt; const toast = (m) => { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('show'), 1800); };
+  const copy = (t) => (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast('Link copied'), () => toast(t));
+  const baseUrl = () => location.origin + location.pathname;
 
-  $('#sub').textContent = `${fmt(N)} accepted main-track papers · ${fmt(M.institutions)} institutions · rank, paper count and research-area mix for each.`;
-  $('#snap').textContent = `Data snapshot ${M.snapshot}`;
+  /* ---------- static text ---------- */
+  document.querySelectorAll('.snap').forEach(s => s.textContent = M.snapshot);
+  $('#instSub').textContent = `${fmt(N)} accepted main-track papers · ${fmt(M.institutions)} institutions · rank, paper count and research-area mix for each.`;
+  $('#stats').replaceChildren(
+    el('div', {}, [el('b', { text: fmt(N) }), el('span', { text: 'accepted papers' })]),
+    el('div', {}, [el('b', { text: fmt(M.institutions) }), el('span', { text: 'institutions' })]),
+    el('div', {}, [el('b', { text: String(A.length) }), el('span', { text: 'research areas' })]),
+  );
   if (!REPO_URL.startsWith('{{')) {
     const li = $('#fix'); li.textContent = 'Spotted a wrong mapping? ';
     li.append(el('a', { href: `${REPO_URL}/issues/new`, rel: 'noopener', text: 'Open an issue' }), document.createTextNode(' and it will be fixed.'));
   }
 
-  /* ---------- search ---------- */
-  function search(q, limit = 8) {
-    const nq = norm(q); if (!nq) return [];
-    const words = nq.split(' ');
-    const out = [];
+  /* ---------- router ---------- */
+  // #/                      home
+  // #/institutions[/slug]   institution search (+ card)
+  // #/topics[?q=...]        topic search
+  // #slug (old links)       -> #/institutions/slug
+  function route() {
+    let h = location.hash.replace(/^#/, '');
+    if (h && !h.startsWith('/')) { if (bySlug.has(decodeURIComponent(h))) { location.replace('#/institutions/' + h); return; } h = '/'; }
+    const [path, qs] = h.split('?');
+    const parts = (path || '/').split('/').filter(Boolean);
+    const view = parts[0] === 'institutions' ? 'institutions' : parts[0] === 'topics' ? 'topics' : 'home';
+    document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === 'v-' + view));
+    document.querySelectorAll('.tabs a').forEach(a => { if (a.dataset.tab === view) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+    $('#about').style.display = view === 'home' ? 'none' : '';
+    document.title = view === 'institutions' ? 'Institutions · NeurIPS 2026 Explorer' : view === 'topics' ? 'Topics · NeurIPS 2026 Explorer' : 'NeurIPS 2026 Explorer';
+    if (view === 'institutions') {
+      const x = parts[1] && bySlug.get(decodeURIComponent(parts[1]));
+      if (x) { q.value = x.n; renderCard(x); } else { $('#card').classList.remove('show'); }
+      if (!tableRendered) renderTable();
+    }
+    if (view === 'topics') {
+      ensurePapers();
+      const qq = new URLSearchParams(qs || '').get('q');
+      if (qq && qq !== lastTopicQuery) { $('#tq').value = qq; runTopic(qq, false); }
+      else if (!qq) warmModel();
+    }
+    if (view !== 'institutions' || !parts[1]) window.scrollTo({ top: 0 });
+  }
+  window.addEventListener('hashchange', route);
+
+  /* =================== INSTITUTIONS =================== */
+  function search(qstr, limit = 8) {
+    const nq = norm(qstr); if (!nq) return [];
+    const words = nq.split(' '); const out = [];
     for (const x of INST) {
       let best = 0;
       for (const k of x.keys) {
         let s = 0;
-        if (k === nq) s = 100;
-        else if (k.startsWith(nq)) s = 80;
-        else if ((' ' + k).includes(' ' + nq)) s = 60;
-        else if (k.includes(nq)) s = 40;
+        if (k === nq) s = 100; else if (k.startsWith(nq)) s = 80; else if ((' ' + k).includes(' ' + nq)) s = 60; else if (k.includes(nq)) s = 40;
         else if (words.length > 1 && words.every(w => (' ' + k).includes(' ' + w))) s = 30;
         if (s > best) best = s;
       }
@@ -242,7 +434,7 @@ footer b { color: var(--ink); }
   let sel = -1, cur = [];
   function renderSuggest() {
     cur = search(q.value); sel = cur.length ? 0 : -1;
-    sug.replaceChildren(...cur.map((x, i) => el('button', { type: 'button', role: 'option', 'aria-selected': String(i === sel), onclick: () => choose(x) }, [
+    sug.replaceChildren(...cur.map((x, i) => el('button', { type: 'button', role: 'option', 'aria-selected': String(i === sel), onclick: () => openInst(x) }, [
       el('span', { className: 'r', text: '#' + x.r }), el('span', { className: 'nm', text: x.n }), el('span', { className: 'pp', text: x.p + (x.p === 1 ? ' paper' : ' papers') })])));
     const open = cur.length > 0 && document.activeElement === q;
     sug.classList.toggle('open', open); combo.setAttribute('aria-expanded', String(open));
@@ -253,21 +445,20 @@ footer b { color: var(--ink); }
   q.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowDown') { e.preventDefault(); moveSel(1); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); moveSel(-1); }
-    else if (e.key === 'Enter') { if (sel >= 0) { e.preventDefault(); choose(cur[sel]); } }
-    else if (e.key === 'Escape') { sug.classList.remove('open'); }
+    else if (e.key === 'Enter') { if (sel >= 0) { e.preventDefault(); openInst(cur[sel]); } }
+    else if (e.key === 'Escape') sug.classList.remove('open');
   });
   document.addEventListener('click', (e) => { if (!combo.contains(e.target)) sug.classList.remove('open'); });
-  document.querySelectorAll('.hint button').forEach(b => b.addEventListener('click', () => { const r = search(b.dataset.q, 1)[0]; if (r) choose(r); }));
+  document.querySelectorAll('#v-institutions .hint button').forEach(b => b.addEventListener('click', () => { const r = search(b.dataset.q, 1)[0]; if (r) openInst(r); }));
 
-  function choose(x) {
+  function openInst(x) {
     sug.classList.remove('open'); q.value = x.n; q.blur();
     tableFilter = ''; page = 1; renderTable();
-    renderCard(x);
-    history.replaceState(null, '', '#' + x.slug);
-    $('#card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const target = '#/institutions/' + x.slug;
+    if (location.hash !== target) location.hash = target; else renderCard(x);
+    setTimeout(() => $('#card').scrollIntoView({ behavior: 'smooth', block: 'start' }), 30);
   }
 
-  /* ---------- card ---------- */
   function renderCard(x) {
     const card = $('#card'); const tot = x.a.reduce((s, v) => s + v, 0) || 1;
     const tied = INST.filter(y => y.r === x.r).length > 1;
@@ -278,12 +469,11 @@ footer b { color: var(--ink); }
     if (x.s) chips.push(el('span', { className: 'chip ' + x.s, text: x.s === 'I' ? 'Industry' : 'Academia' }));
     if (x.c) chips.push(el('span', { className: 'chip', text: `${flag(x.c)} ${x.c}` }));
     if (sig >= 0 && !noisy) chips.push(el('span', { className: 'chip', style: `color:${A[sig].color}`, text: `Signature area: ${A[sig].short}` }));
-
     const order = A.map((a, i) => i).sort((i, j) => x.a[j] - x.a[i]);
     const maxShare = Math.max(...x.a.map(v => v / tot), ...confShare) || 1;
     const rows = order.filter(i => x.a[i] > 0 || !noisy).map(i => {
       const share = x.a[i] / tot, lift = lifts[i];
-      const liftTxt = x.a[i] === 0 ? '—' : (lift >= 1.15 ? `${lift.toFixed(1)}× avg` : lift <= 0.85 ? `${lift.toFixed(1)}× avg` : '≈ avg');
+      const liftTxt = x.a[i] === 0 ? '—' : (lift >= 1.15 || lift <= 0.85 ? `${lift.toFixed(1)}× avg` : '≈ avg');
       return el('div', { className: 'arow' + (i === sig && !noisy ? ' sig' : '') }, [
         el('div', { className: 'nm' }, [el('span', { className: 'sw', style: `background:${A[i].color}` }), el('span', { text: A[i].name })]),
         el('div', { className: 'ct', text: String(x.a[i]) }),
@@ -291,8 +481,9 @@ footer b { color: var(--ink); }
         el('div', { className: 'lift' + (lift >= 1.15 && x.a[i] >= 3 ? ' up' : ''), text: noisy ? pct(share, 0) : liftTxt }),
       ]);
     });
-    const url = location.origin + location.pathname + '#' + x.slug;
+    const url = baseUrl() + '#/institutions/' + x.slug;
     const tweet = `${x.n}: ${x.p} paper${x.p === 1 ? '' : 's'} at NeurIPS 2026 (#${x.r} of ${fmt(M.institutions)} institutions). Find yours:`;
+    const focusArea = A[sig >= 0 ? sig : order[0]];
     card.replaceChildren(
       el('div', { className: 'top' }, [
         el('div', {}, [el('h2', { text: x.n }), el('div', { className: 'chips' }, chips)]),
@@ -313,41 +504,37 @@ footer b { color: var(--ink); }
       el('div', { className: 'share' }, [
         el('a', { className: 'btn primary', href: `https://x.com/intent/post?text=${encodeURIComponent(tweet)}&url=${encodeURIComponent(url)}`, target: '_blank', rel: 'noopener', text: 'Share on X' }),
         el('button', { className: 'btn', type: 'button', text: 'Copy link', onclick: () => copy(url) }),
+        el('a', { className: 'btn', href: '#/topics?q=' + encodeURIComponent(focusArea.name), text: `Who else works on ${focusArea.short}? →` }),
       ]),
     );
     card.classList.add('show');
   }
-  function copy(t) { (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast('Link copied'), () => toast(t)); }
-  let tt; function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('show'), 1800); }
 
-  /* ---------- table ---------- */
-  let sector = '', areaIdx = -1, page = 1, tableFilter = '';
+  let sector = '', areaIdx = -1, page = 1, tableFilter = '', tableRendered = false;
   const sortSel = $('#sortArea');
   A.forEach((a, i) => sortSel.append(el('option', { value: String(i), text: `Rank by ${a.name}` })));
   sortSel.addEventListener('change', () => { areaIdx = sortSel.value === '' ? -1 : +sortSel.value; page = 1; renderTable(); });
-  document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => {
-    sector = b.dataset.sector; document.querySelectorAll('.seg button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); page = 1; renderTable();
+  document.querySelectorAll('#instSeg button').forEach(b => b.addEventListener('click', () => {
+    sector = b.dataset.sector; document.querySelectorAll('#instSeg button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); page = 1; renderTable();
   }));
   $('#more').addEventListener('click', () => { page++; renderTable(); });
   $('#areasLegend').replaceChildren(...A.map(a => el('span', {}, [el('i', { style: `background:${a.color}` }), document.createTextNode(a.short)])));
-
+  function denseRank(list, val) { const r = new Map(); let prev = null, rk = 0; list.forEach((x, i) => { const v = val(x); if (v !== prev) { rk = i + 1; prev = v; } r.set(x, rk); }); return (x) => r.get(x); }
   function renderTable() {
+    tableRendered = true;
     let list = INST.filter(x => !sector || x.s === sector);
     if (tableFilter.trim()) { const hits = new Set(search(tableFilter, 400)); list = list.filter(x => hits.has(x)); }
     let rankOf;
-    if (areaIdx >= 0) {
-      list = list.filter(x => x.a[areaIdx] > 0).sort((a, b) => b.a[areaIdx] - a.a[areaIdx] || b.p - a.p);
-      const r = new Map(); let prev = null, rk = 0; list.forEach((x, i) => { if (x.a[areaIdx] !== prev) { rk = i + 1; prev = x.a[areaIdx]; } r.set(x, rk); }); rankOf = (x) => r.get(x);
-    } else if (sector) {
-      const r = new Map(); let prev = null, rk = 0; list.forEach((x, i) => { if (x.p !== prev) { rk = i + 1; prev = x.p; } r.set(x, rk); }); rankOf = (x) => r.get(x);
-    } else rankOf = (x) => x.r;
+    if (areaIdx >= 0) { list = list.filter(x => x.a[areaIdx] > 0).sort((a, b) => b.a[areaIdx] - a.a[areaIdx] || b.p - a.p); rankOf = denseRank(list, x => x.a[areaIdx]); }
+    else if (sector) rankOf = denseRank(list, x => x.p);
+    else rankOf = (x) => x.r;
     const shown = list.slice(0, page * 50);
     $('#tbody').replaceChildren(...shown.map(x => {
       const tot = x.a.reduce((s, v) => s + v, 0) || 1;
       const val = areaIdx >= 0 ? x.a[areaIdx] : x.p;
-      return el('tr', { className: 'row', onclick: () => choose(x), tabIndex: 0, onkeydown: (e) => { if (e.key === 'Enter') choose(x); } }, [
+      return el('tr', { className: 'row', onclick: () => openInst(x), tabIndex: 0, onkeydown: (e) => { if (e.key === 'Enter') openInst(x); } }, [
         el('td', { className: 'r', text: String(rankOf(x)) }),
-        el('td', {}, [el('span', { className: 'nm', text: x.n }), x.s ? el('span', { className: 'tag ' + x.s, text: x.s === 'I' ? 'industry' : '' }) : null]),
+        el('td', {}, [el('span', { className: 'nm', text: x.n }), x.s === 'I' ? el('span', { className: 'tag I', text: 'industry' }) : null]),
         el('td', { className: 'p', text: fmt(val) }),
         el('td', { className: 'pct', text: areaIdx >= 0 ? pct(x.a[areaIdx] / tot, 0) : pct(x.p / N, 2) }),
         el('td', { className: 'mix' }, el('div', { className: 'mini' }, x.a.map((v, i) => v ? el('div', { style: `flex:${v};background:${A[i].color}` }) : null))),
@@ -359,11 +546,140 @@ footer b { color: var(--ink); }
     document.querySelector('th.pct').textContent = areaIdx >= 0 ? 'Of own' : 'Share';
   }
 
-  /* ---------- boot ---------- */
-  renderTable();
-  function fromHash() { const s = decodeURIComponent(location.hash.slice(1)); const x = s && bySlug.get(s); if (x) { q.value = x.n; renderCard(x); } }
-  window.addEventListener('hashchange', fromHash);
-  fromHash();
+  /* =================== TOPICS =================== */
+  const MODEL = 'Xenova/bge-small-en-v1.5';
+  const TJS = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.2';
+  let P = null, V = null, S = null, DIM = 384;        // paper rows, int8 vectors, per-paper scales
+  let papersReady = null, extractor = null, modelReady = null, lastTopicQuery = null, idf = null;
+  const st = $('#tstatus');
+  function setStatus(msg, frac) {
+    st.replaceChildren(...[msg ? el('span', { text: msg }) : null, frac == null ? null : el('span', { className: 'pbar' }, el('i', { style: `width:${Math.round(frac * 100)}%` }))].filter(Boolean));
+  }
+  function ensurePapers() {
+    if (papersReady) return papersReady;
+    papersReady = new Promise((resolve, reject) => {
+      const s = document.createElement('script'); s.src = `papers.js?v=${PVER}`; s.onload = resolve; s.onerror = () => reject(new Error('papers.js failed to load')); document.head.append(s);
+    }).then(() => fetch(`papers.bin?v=${PVER}`)).then(r => { if (!r.ok) throw new Error('papers.bin ' + r.status); return r.arrayBuffer(); }).then(buf => {
+      P = window.PAPERS.rows; DIM = window.PAPERS.dim; const n = P.length;
+      S = new Float32Array(buf, 0, n); V = new Int8Array(buf, n * 4, n * DIM);
+    });
+    return papersReady;
+  }
+  function warmModel() {
+    if (modelReady) return modelReady;
+    setStatus('Loading the search model (about 33 MB, first visit only)…', 0.02);
+    modelReady = import(TJS).then(({ pipeline, env }) => {
+      env.allowLocalModels = false;
+      const seen = new Map();
+      return pipeline('feature-extraction', MODEL, { dtype: 'q8', progress_callback: (p) => {
+        if (p.status === 'progress' && p.total) { seen.set(p.file, [p.loaded, p.total]); let a = 0, b = 0; for (const [l, t] of seen.values()) { a += l; b += t; } setStatus('Loading the search model (about 33 MB, first visit only)…', b ? a / b : 0); }
+      } });
+    }).then(ex => { extractor = ex; setStatus('Model ready. Type a topic or paste an abstract.'); return ex; })
+      .catch(err => { console.warn(err); setStatus('Could not load the search model, so results use keyword matching on titles instead.'); extractor = null; return null; });
+    return modelReady;
+  }
+  async function embed(text) {
+    const words = text.trim().split(/\s+/).length;
+    const input = words <= 24 ? 'Represent this sentence for searching relevant passages: ' + text : text;
+    const out = await extractor(input, { pooling: 'cls', normalize: true });
+    return out.data;
+  }
+  function lexicalScores(text) {        // fallback when the model cannot load: IDF-weighted word overlap with titles
+    if (!idf) { idf = new Map(); P.forEach(r => new Set(norm(r[0]).split(' ')).forEach(w => idf.set(w, (idf.get(w) || 0) + 1))); for (const [w, c] of idf) idf.set(w, Math.log(P.length / c)); }
+    const qw = [...new Set(norm(text).split(' ').filter(w => w.length > 2))];
+    return P.map(r => { const tw = new Set(norm(r[0]).split(' ')); let s = 0; for (const w of qw) if (tw.has(w)) s += idf.get(w) || 0; return s; });
+  }
+  async function runTopic(text, pushUrl = true) {
+    text = text.trim(); if (!text) return;
+    lastTopicQuery = text;
+    if (pushUrl) { const h = text.length <= 120 ? '#/topics?q=' + encodeURIComponent(text) : '#/topics'; if (location.hash !== h) history.replaceState(null, '', h); }
+    $('#tgo').disabled = true;
+    try {
+      await ensurePapers();
+      await warmModel();
+      setStatus(`Searching ${fmt(P.length)} papers…`);
+      let sims, mode = 'semantic';
+      if (extractor) {
+        const qv = await embed(text);
+        const n = P.length; sims = new Float32Array(n);
+        for (let i = 0; i < n; i++) { let d = 0; const o = i * DIM; for (let j = 0; j < DIM; j++) d += V[o + j] * qv[j]; sims[i] = d * S[i]; }
+      } else { sims = lexicalScores(text); mode = 'keyword'; }
+      renderTopic(text, sims, mode);
+      setStatus(mode === 'semantic' ? '' : 'Keyword matching on titles (search model unavailable).');
+    } catch (e) { console.error(e); setStatus('Something went wrong: ' + e.message); }
+    finally { $('#tgo').disabled = false; }
+  }
+  function renderTopic(text, sims, mode) {
+    const K = +$('#tk').value;
+    const idx = Array.from(sims.keys()).sort((a, b) => sims[b] - sims[a]).slice(0, K).filter(i => mode === 'semantic' || sims[i] > 0);
+    const cnt = new Map(), wsum = new Map();
+    let withInd = 0; const areaCnt = new Array(A.length).fill(0);
+    for (const i of idx) {
+      const [, insts, ar] = P[i]; areaCnt[ar]++;
+      if (insts.some(k => INST[k] && INST[k].s === 'I')) withInd++;
+      for (const k of insts) { cnt.set(k, (cnt.get(k) || 0) + 1); wsum.set(k, (wsum.get(k) || 0) + sims[i]); }
+    }
+    const ranked = [...cnt.keys()].sort((a, b) => cnt.get(b) - cnt.get(a) || wsum.get(b) - wsum.get(a));
+    const aca = ranked.filter(k => INST[k].s === 'A'), ind = ranked.filter(k => INST[k].s === 'I');
+    const shortQ = text.length > 70 ? text.slice(0, 67).trimEnd() + '…' : text;
+    const topArea = areaCnt.indexOf(Math.max(...areaCnt));
+    const lead = ranked.length ? INST[ranked[0]] : null;
+
+    const sideList = (list, cls) => {
+      const top = list.slice(0, 8); const mx = top.length ? cnt.get(top[0]) : 1;
+      if (!top.length) return [el('div', { className: 'empty', text: cls === 'I' ? 'No company authors among these papers.' : 'No academic authors among these papers.' })];
+      return top.map((k, j) => el('div', { className: 'irow', onclick: () => openInst(INST[k]), title: `Open ${INST[k].n}` }, [
+        el('span', { className: 'rk', text: String(j + 1) }),
+        el('span', { className: 'in', text: INST[k].n }),
+        el('span', { className: 'barwrap' }, [el('span', { className: 'b', style: `width:${Math.max(6, 70 * cnt.get(k) / mx)}px` }), el('span', { className: 'v', text: String(cnt.get(k)) })]),
+      ]));
+    };
+    const shareQ = text.length > 70 ? '' : text;
+    const shareUrl = baseUrl() + (shareQ ? '#/topics?q=' + encodeURIComponent(shareQ) : '#/topics');
+    const tweet = lead ? `Who publishes the most on "${shortQ}" at NeurIPS 2026? #1 is ${lead.n} (${cnt.get(ranked[0])} of the ${idx.length} closest papers). Check your topic:` : `Who publishes on "${shortQ}" at NeurIPS 2026?`;
+
+    const papers = idx.slice(0, 20).map(i => {
+      const [title, insts, ar] = P[i];
+      return el('div', { className: 'paper' }, [
+        el('div', { className: 't', text: title }),
+        el('div', { className: 'meta' }, [
+          mode === 'semantic' ? el('span', { className: 'sim', text: `match ${(sims[i] * 100).toFixed(0)}` }) : null,
+          el('span', { className: 'ar' }, [el('i', { style: `background:${A[ar].color}` }), document.createTextNode(A[ar].short)]),
+          ...insts.slice(0, 6).map(k => el('button', { className: 'ia ' + (INST[k].s || ''), type: 'button', text: INST[k].n, onclick: () => openInst(INST[k]) })),
+          insts.length > 6 ? el('span', { className: 'sim', text: `+${insts.length - 6} more` }) : null,
+        ]),
+      ]);
+    });
+
+    $('#tres').replaceChildren(
+      el('div', { className: 'summary' }, [
+        el('div', { className: 'big' }, [document.createTextNode('Who publishes on '), el('span', { className: 'q', text: `“${shortQ}”` })]),
+        el('div', { className: 'sub', text: `Based on the ${idx.length} closest of ${fmt(P.length)} papers · ${pct(withInd / Math.max(1, idx.length), 0)} have a company author · most common area: ${A[topArea].name}` }),
+        el('div', { className: 'stack', style: 'margin-top:12px' }, areaCnt.map((v, i) => v ? el('div', { title: `${A[i].name}: ${v}`, style: `flex:${v};background:${A[i].color}` }) : null)),
+        el('div', { className: 'share' }, [
+          el('a', { className: 'btn primary', href: `https://x.com/intent/post?text=${encodeURIComponent(tweet)}&url=${encodeURIComponent(shareUrl)}`, target: '_blank', rel: 'noopener', text: 'Share on X' }),
+          el('button', { className: 'btn', type: 'button', text: 'Copy link', onclick: () => copy(shareUrl) }),
+        ]),
+      ]),
+      el('div', { className: 'split' }, [
+        el('div', { className: 'side A' }, [el('h3', { text: 'UNIVERSITIES & INSTITUTES' }), ...sideList(aca, 'A')]),
+        el('div', { className: 'side I' }, [el('h3', { text: 'COMPANIES' }), ...sideList(ind, 'I')]),
+      ]),
+      el('div', { className: 'blk' }, [
+        el('h3', { text: 'Closest papers' }),
+        el('p', { className: 'note', text: 'The 20 accepted papers closest to your text. Click an institution to open its page.' }),
+        ...papers,
+      ]),
+    );
+    $('#tres').classList.add('show');
+  }
+  $('#tgo').addEventListener('click', () => runTopic($('#tq').value));
+  $('#tq').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); runTopic($('#tq').value); } });
+  $('#tq').addEventListener('focus', () => { ensurePapers(); warmModel(); }, { once: true });
+  $('#tk').addEventListener('change', () => { if (lastTopicQuery) runTopic(lastTopicQuery, false); });
+  document.querySelectorAll('#tex button').forEach(b => b.addEventListener('click', () => { $('#tq').value = b.dataset.t; runTopic(b.dataset.t); }));
+
+  route();
 })();
 </script>
 </body>
