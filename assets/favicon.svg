@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2563eb"/><stop offset=".55" stop-color="#7c3aed"/><stop offset="1" stop-color="#ea580c"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#g)"/>
+  <!-- Opera House sails -->
+  <path d="M15 46 C14 38 16 31 20 26 C26 28 31 36 32 46 Z" fill="#fff" opacity=".75"/>
+  <path d="M27 46 C26 34 29 23 34 15 C43 20 50 32 51 46 Z" fill="#fff"/>
+  <path d="M34 15 C37 26 39 36 39 46" fill="none" stroke="url(#g)" stroke-width="2" opacity=".55"/>
+  <rect x="10" y="46" width="44" height="4" rx="2" fill="#fff"/>
+</svg>
