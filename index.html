@@ -6,7 +6,7 @@
 <title>NeurIPS 2026 Explorer</title>
 <meta name="description" content="Search NeurIPS 2026 by institution, or by topic and paper: which universities and companies publish the most on it.">
 <meta property="og:title" content="NeurIPS 2026 Explorer">
-<meta property="og:description" content="5,629 accepted papers. Find your institution, or find who publishes the most on your topic.">
+<meta property="og:description" content="7,899 accepted papers. Find your institution, or find who publishes the most on your topic.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://juevn.github.io/neurips2026/">
 <meta property="og:image" content="https://juevn.github.io/neurips2026/assets/og-card.png">
@@ -14,7 +14,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="NeurIPS 2026 Explorer">
-<meta name="twitter:description" content="Who works on your topic? Search a paper's title or abstract, or look up any of 2,910 institutions.">
+<meta name="twitter:description" content="Who works on your topic? Search a paper's title or abstract, or look up any of 3,620 institutions.">
 <meta name="twitter:image" content="https://juevn.github.io/neurips2026/assets/og-card.png">
 <meta name="twitter:creator" content="@jueun_kim_">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -377,7 +377,7 @@ footer b { color: var(--ink); }
     <details>
     <summary><h2>How this was made</h2><span class="more">data, method and caveats</span></summary>
     <ul>
-      <li><b>Papers and institutions</b> come from the official neurips.cc program data, which lists each author's institution from their OpenReview profile. Main track only, snapshot <span class="snap"></span>.</li>
+      <li><b>Papers and institutions</b> come from the official neurips.cc program data, which lists each author's institution from their OpenReview profile. Main track only, snapshot <span class="snap"></span>. Papers come from both the schedule feed and the poster list in Downloads, so posters without a session yet are included.</li>
       <li><b>Counting:</b> a paper counts once for every institution with at least one author on it, so shares add up to more than 100%. The <i>fractional</i> count splits each paper equally across its authors, then across each author's institutions.</li>
       <li><b>Names</b> are normalized with a hand-checked table of about 380 institutions plus rules for typos, sub-units and acronyms. Google includes DeepMind, Meta includes FAIR, all Chinese Academy of Sciences institutes are merged, HKUST and HKUST (Guangzhou) are separate. Less common names may still appear under more than one spelling.</li>
       <li><b>Research areas</b> are not official tags. Titles and abstracts were embedded with bge-small-en-v1.5 and clustered, then the clusters were named from their top terms. Borders between neighbouring areas are fuzzy.</li>
@@ -395,13 +395,13 @@ footer b { color: var(--ink); }
 </div>
 <div class="toast" id="toast" role="status"></div>
 
-<script src="data.js?v=38c28247a9"></script>
+<script src="data.js?v=a5ae58fff4"></script>
 <script>
 (() => {
   'use strict';
   const D = window.NEURIPS, M = D.meta, A = M.areas, INST = D.inst, N = M.papers;
   const REPO_URL = 'https://github.com/juevn/neurips2026';
-  const PVER = '54a24da7d3';
+  const PVER = 'f882828640';
   const $ = (s) => document.querySelector(s);
   const el = (tag, props = {}, kids = []) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (v == null) continue; if (k === 'style') e.style.cssText = v; else if (k === 'text') e.textContent = v; else if (k.startsWith('data-') || k.startsWith('aria-') || k === 'role') e.setAttribute(k, v); else e[k] = v; } for (const c of [].concat(kids)) if (c != null) e.append(c); return e; };
   const fmt = (x) => x.toLocaleString('en-US');

@@ -1,6 +1,6 @@
 # NeurIPS 2026 Explorer
 
-Two searches over the 5,629 accepted NeurIPS 2026 main-track papers:
+Two searches over the 7,899 accepted NeurIPS 2026 main-track papers:
 
 - **Find your institution.** Rank, paper count and research-area mix for every university, lab and company.
 - **Search by topic or paper.** Type a topic or paste an abstract. The page finds the closest papers by meaning and shows which universities and companies wrote the most of them.
@@ -24,8 +24,8 @@ Two searches over the 5,629 accepted NeurIPS 2026 main-track papers:
 | `rank` | Rank by paper count. Institutions with the same count share a rank. |
 | `institution` | Normalized institution name. |
 | `papers` | Accepted main-track papers with at least one author from this institution. |
-| `pct_of_papers` | `papers` as a share of all 5,629 main-track papers. Shares add up to more than 100%. |
-| `fractional_papers` | Each paper split equally across its authors, then across each author's institutions. Adds up to 5,629. |
+| `pct_of_papers` | `papers` as a share of all 7,899 main-track papers. Shares add up to more than 100%. |
+| `fractional_papers` | Each paper split equally across its authors, then across each author's institutions. Adds up to 7,899. |
 | `country` | Country code, for institutions in the hand-checked table. Blank otherwise. |
 | `sector` | `academia` or `industry`. |
 | Area columns | Papers per research area. Each paper is in exactly one area. |
