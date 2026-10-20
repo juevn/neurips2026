@@ -236,6 +236,7 @@ td .nm { font-weight: 500; overflow-wrap: anywhere; }
 .paper .t a:hover { text-decoration: underline; }
 .paper .t a::after { content: ' ↗'; color: var(--muted); font-size: 13px; }
 .paper .ses { font-size: 12.5px; color: var(--muted); }
+.paper .trk { font-size: 12px; font-weight: 700; color: #7c3aed; background: #f3efff; border-radius: 6px; padding: 2px 7px; }
 .paper .meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; }
 .paper .sim { font-size: 12.5px; font-weight: 700; color: var(--faint); margin-right: 4px; }
 .paper .ia { all: unset; cursor: pointer; font-size: 12.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--panel-2); color: var(--muted); }
@@ -377,7 +378,7 @@ footer b { color: var(--ink); }
     <details>
     <summary><h2>How this was made</h2><span class="more">data, method and caveats</span></summary>
     <ul>
-      <li><b>Papers and institutions</b> come from the official neurips.cc program data, which lists each author's institution from their OpenReview profile. Main track only, snapshot <span class="snap"></span>. Papers come from both the schedule feed and the poster list in Downloads, so posters without a session yet are included.</li>
+      <li><b>Papers and institutions</b> come from the official neurips.cc program data, which lists each author's institution from their OpenReview profile. Main track only, snapshot <span class="snap"></span>. Papers come from both the schedule feed and the poster list in Downloads, so posters without a session yet are included. Rankings and institution pages use the main track only; topic search also covers the Evaluations &amp; Datasets and Position tracks.</li>
       <li><b>Counting:</b> a paper counts once for every institution with at least one author on it, so shares add up to more than 100%. The <i>fractional</i> count splits each paper equally across its authors, then across each author's institutions.</li>
       <li><b>Names</b> are normalized with a hand-checked table of about 380 institutions plus rules for typos, sub-units and acronyms. Google includes DeepMind, Meta includes FAIR, all Chinese Academy of Sciences institutes are merged, HKUST and HKUST (Guangzhou) are separate. Less common names may still appear under more than one spelling.</li>
       <li><b>Research areas</b> are not official tags. Titles and abstracts were embedded with bge-small-en-v1.5 and clustered, then the clusters were named from their top terms. Borders between neighbouring areas are fuzzy.</li>
@@ -401,7 +402,7 @@ footer b { color: var(--ink); }
   'use strict';
   const D = window.NEURIPS, M = D.meta, A = M.areas, INST = D.inst, N = M.papers;
   const REPO_URL = 'https://github.com/juevn/neurips2026';
-  const PVER = 'f882828640';
+  const PVER = 'b2e3f106fb';
   const $ = (s) => document.querySelector(s);
   const el = (tag, props = {}, kids = []) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (v == null) continue; if (k === 'style') e.style.cssText = v; else if (k === 'text') e.textContent = v; else if (k.startsWith('data-') || k.startsWith('aria-') || k === 'role') e.setAttribute(k, v); else e[k] = v; } for (const c of [].concat(kids)) if (c != null) e.append(c); return e; };
   const fmt = (x) => x.toLocaleString('en-US');
@@ -532,7 +533,7 @@ footer b { color: var(--ink); }
     if (open || list.childElementCount) return;
     list.append(el('div', { className: 'empty', text: 'Loading papers…' }));
     try { await ensurePapers(); } catch (e) { list.replaceChildren(el('div', { className: 'empty', text: 'Could not load papers.' })); return; }
-    if (!byInst) { byInst = new Map(); P.forEach((r, j) => r[1].forEach(k => { if (!byInst.has(k)) byInst.set(k, []); byInst.get(k).push(j); })); }
+    if (!byInst) { byInst = new Map(); P.forEach((r, j) => !r[5] && r[1].forEach(k => { if (!byInst.has(k)) byInst.set(k, []); byInst.get(k).push(j); })); }
     const me = INST.indexOf(x);
     const mine = (byInst.get(me) || []).filter(j => P[j][2] === ai);
     list.replaceChildren(...mine.map(j => {
@@ -646,6 +647,7 @@ footer b { color: var(--ink); }
   /* =================== TOPICS =================== */
   const MODEL = 'Xenova/bge-small-en-v1.5';
   const TJS = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.2';
+  const TRACKS = ['', 'Evaluations & Datasets track', 'Position track'];
   let P = null, V = null, S = null, SES = [], DIM = 384;        // paper rows, int8 vectors, per-paper scales
   let papersReady = null, extractor = null, modelReady = null, lastTopicQuery = null, idf = null;
   const st = $('#tstatus');
@@ -736,12 +738,13 @@ footer b { color: var(--ink); }
     const tweet = lead ? `Who publishes the most on "${shortQ}" at NeurIPS 2026? #1 is ${lead.n} (${cnt.get(ranked[0])} of the ${idx.length} closest papers). Check your topic:` : `Who publishes on "${shortQ}" at NeurIPS 2026?`;
 
     const papers = idx.slice(0, 20).map(i => {
-      const [title, insts, ar, url, ses] = P[i];
+      const [title, insts, ar, url, ses, trk] = P[i];
       return el('div', { className: 'paper' }, [
         el('div', { className: 't' }, url ? el('a', { href: 'https://neurips.cc/virtual/2026/' + url, target: '_blank', rel: 'noopener', text: title }) : title),
         el('div', { className: 'meta' }, [
           mode === 'semantic' ? el('span', { className: 'sim', text: `match ${(sims[i] * 100).toFixed(0)}` }) : null,
           el('span', { className: 'ar' }, [el('i', { style: `background:${A[ar].color}` }), document.createTextNode(A[ar].short)]),
+          trk ? el('span', { className: 'trk', text: TRACKS[trk] }) : null,
           SES[ses] ? el('span', { className: 'ses', text: '📍 ' + SES[ses] }) : null,
           ...insts.slice(0, 6).map(k => el('button', { className: 'ia ' + (INST[k].s || ''), type: 'button', text: INST[k].n, onclick: () => openInst(INST[k]) })),
           insts.length > 6 ? el('span', { className: 'sim', text: `+${insts.length - 6} more` }) : null,
@@ -752,7 +755,7 @@ footer b { color: var(--ink); }
     $('#tres').replaceChildren(
       el('div', { className: 'summary' }, [
         el('div', { className: 'big' }, [document.createTextNode('Who publishes on '), el('span', { className: 'q', text: `“${shortQ}”` })]),
-        el('div', { className: 'sub', text: `Based on the ${idx.length} closest of ${fmt(P.length)} papers · ${pct(withInd / Math.max(1, idx.length), 0)} have a company author · most common area: ${A[topArea].name}` }),
+        el('div', { className: 'sub', text: `Based on the ${idx.length} closest of ${fmt(P.length)} papers (all tracks) · ${pct(withInd / Math.max(1, idx.length), 0)} have a company author · most common area: ${A[topArea].name}` }),
         ...areaBar(areaCnt, A.map((_, i) => i), `Research areas of these ${idx.length} papers`),
         el('div', { className: 'share' }, [
           el('a', { className: 'btn primary', href: `https://x.com/intent/post?text=${encodeURIComponent(tweet)}&url=${encodeURIComponent(shareUrl)}`, target: '_blank', rel: 'noopener', text: 'Share on X' }),
