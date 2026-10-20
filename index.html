@@ -152,6 +152,17 @@ select { font: inherit; font-size: 14px; font-weight: 700; padding: 9px 12px; bo
 #tip.on { opacity: 1; }
 .arow { display: grid; grid-template-columns: minmax(150px, 1.6fr) 44px 1fr 92px; gap: 10px; align-items: center; padding: 7px 0; border-bottom: 1px dashed var(--line); font-size: 15px; }
 .arow:last-child { border-bottom: 0; }
+.agrp { border-bottom: 1px dashed var(--line); }
+.agrp:last-child { border-bottom: 0; }
+.agrp .arow { border-bottom: 0; }
+.arow.open-able { cursor: pointer; border-radius: 8px; }
+.arow.open-able:hover { background: var(--panel-2); }
+.arow.open-able .nm span:last-child::after { content: ' ▸'; color: var(--muted); font-size: 12px; }
+.arow.open-able[aria-expanded="true"] .nm span:last-child::after { content: ' ▾'; }
+.alist { display: none; padding: 0 0 8px 19px; }
+.alist.show { display: block; }
+.alist .paper { padding: 8px 0; }
+.alist .paper .t { font-size: 14.5px; }
 .arow .nm { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .arow .nm span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .arow .sw { width: 11px; height: 11px; border-radius: 3px; flex: none; }
@@ -513,6 +524,31 @@ footer b { color: var(--ink); }
     setTimeout(() => $('#card').scrollIntoView({ behavior: 'smooth', block: 'start' }), 30);
   }
 
+  // papers of one institution in one area, loaded on first click (papers.js is fetched lazily)
+  let byInst = null;
+  async function toggleAreaPapers(x, ai, row, list) {
+    const open = row.getAttribute('aria-expanded') === 'true';
+    row.setAttribute('aria-expanded', String(!open)); list.classList.toggle('show', !open);
+    if (open || list.childElementCount) return;
+    list.append(el('div', { className: 'empty', text: 'Loading papers…' }));
+    try { await ensurePapers(); } catch (e) { list.replaceChildren(el('div', { className: 'empty', text: 'Could not load papers.' })); return; }
+    if (!byInst) { byInst = new Map(); P.forEach((r, j) => r[1].forEach(k => { if (!byInst.has(k)) byInst.set(k, []); byInst.get(k).push(j); })); }
+    const me = INST.indexOf(x);
+    const mine = (byInst.get(me) || []).filter(j => P[j][2] === ai);
+    list.replaceChildren(...mine.map(j => {
+      const [title, insts, , url, ses] = P[j]; const others = insts.filter(k => k !== me);
+      return el('div', { className: 'paper' }, [
+        el('div', { className: 't' }, url ? el('a', { href: 'https://neurips.cc/virtual/2026/' + url, target: '_blank', rel: 'noopener', text: title }) : title),
+        el('div', { className: 'meta' }, [
+          SES[ses] ? el('span', { className: 'ses', text: '📍 ' + SES[ses] }) : null,
+          ...others.slice(0, 5).map(k => el('button', { className: 'ia ' + (INST[k].s || ''), type: 'button', text: INST[k].n, onclick: () => openInst(INST[k]) })),
+          others.length > 5 ? el('span', { className: 'sim', text: `+${others.length - 5} more` }) : null,
+        ]),
+      ]);
+    }));
+    if (!mine.length) list.replaceChildren(el('div', { className: 'empty', text: 'No papers found.' }));
+  }
+
   function renderCard(x) {
     const card = $('#card'); const tot = x.a.reduce((s, v) => s + v, 0) || 1;
     const tied = INST.filter(y => y.r === x.r).length > 1;
@@ -528,13 +564,20 @@ footer b { color: var(--ink); }
     const rows = order.filter(i => x.a[i] > 0 || !noisy).map(i => {
       const share = x.a[i] / tot, lift = lifts[i];
       const liftTxt = x.a[i] === 0 ? '—' : (lift >= 1.15 || lift <= 0.85 ? `${lift.toFixed(1)}× avg` : '≈ avg');
-      return el('div', { className: 'arow' + (i === sig && !noisy ? ' sig' : '') }, [
+      if (!x.a[i]) return el('div', { className: 'arow' + (i === sig && !noisy ? ' sig' : '') }, rowCells(i, share, lift, liftTxt));
+      const list = el('div', { className: 'alist' });
+      const row = el('div', { className: 'arow open-able' + (i === sig && !noisy ? ' sig' : ''), role: 'button', tabindex: '0', 'aria-expanded': 'false',
+        onclick: () => toggleAreaPapers(x, i, row, list), onkeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleAreaPapers(x, i, row, list); } } }, rowCells(i, share, lift, liftTxt));
+      return el('div', { className: 'agrp' }, [row, list]);
+    });
+    function rowCells(i, share, lift, liftTxt) {
+      return [
         el('div', { className: 'nm' }, [el('span', { className: 'sw', style: `background:${A[i].color}` }), el('span', { text: A[i].name })]),
         el('div', { className: 'ct', text: String(x.a[i]) }),
         el('div', { className: 'bar' }, [el('i', { style: `width:${(100 * share / maxShare).toFixed(1)}%;background:${A[i].color}` }), el('b', { style: `left:${(100 * confShare[i] / maxShare).toFixed(1)}%` })]),
         el('div', { className: 'lift' + (lift >= 1.15 && x.a[i] >= 3 ? ' up' : ''), text: noisy ? pct(share, 0) : liftTxt }),
-      ]);
-    });
+      ];
+    }
     const url = baseUrl() + '#/institutions/' + x.slug;
     const tweet = `${x.n}: ${x.p} paper${x.p === 1 ? '' : 's'} at NeurIPS 2026 (#${x.r} of ${fmt(M.institutions)} institutions). Find yours:`;
     const focusArea = A[sig >= 0 ? sig : order[0]];
@@ -550,7 +593,7 @@ footer b { color: var(--ink); }
       ]),
       el('div', { className: 'mix' }, [
         el('h3', { text: 'What they publish' }),
-        el('p', { className: 'note', text: noisy ? 'Share of this institution’s papers by research area. With fewer than 8 papers, this mix is too small to compare.' : 'Share of this institution’s papers by research area, compared with the whole conference (black tick).' }),
+        el('p', { className: 'note', text: noisy ? 'Share of this institution’s papers by research area. With fewer than 8 papers, this mix is too small to compare.' : 'Share of this institution’s papers by research area, compared with the whole conference (black tick). Click an area to see its papers.' }),
         ...areaBar(x.a, order, null),
         el('div', { style: 'margin-top:12px' }, rows),
         noisy ? null : el('div', { className: 'legendline' }, [el('span', {}, [el('span', { className: 'tick' }), document.createTextNode('conference average')]), el('span', { text: '“2.0× avg” = twice the conference-wide share' })]),
