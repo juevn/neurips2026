@@ -63,7 +63,7 @@ button { font-family: inherit; }
 
 /* home */
 .hero { text-align: center; padding: 40px 0 10px; }
-.hero .title { font-family: 'Google Sans Display', 'Google Sans', sans-serif; font-weight: 700; letter-spacing: -3px; line-height: .95; font-size: clamp(56px, 13vw, 128px); margin: 0; }
+.hero .title { font-family: 'Google Sans Display', 'Google Sans', sans-serif; font-weight: 700; letter-spacing: -3px; line-height: 1; font-size: clamp(50px, 11vw, 108px); margin: 0; }
 .hero .title .n { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .hero .title .y { color: transparent; -webkit-text-stroke: 2.5px var(--ink); margin-left: .1em; }
 .hero p { color: var(--muted); font-size: clamp(17px, 2.4vw, 21px); margin: 16px auto 0; max-width: 640px; text-wrap: balance; }
@@ -85,8 +85,8 @@ button { font-family: inherit; }
 .door .eg { margin-top: auto; font-size: 14px; color: var(--faint); }
 .door .go { font-weight: 700; font-size: 16px; display: inline-flex; align-items: center; gap: 6px; }
 .door.inst .go { color: var(--aca); } .door.topic .go { color: var(--ind); }
-.hero .kick { font-weight: 700; font-size: clamp(15px, 2.2vw, 19px); letter-spacing: 6px; text-transform: uppercase; color: var(--ink); margin: 14px auto 0; }
-.hero .kick span { letter-spacing: 0; text-transform: none; font-weight: 500; color: var(--muted); }
+.hero .title .e { color: var(--ink); }
+.hero .kick { font-weight: 700; font-size: clamp(13px, 1.8vw, 15px); letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin: 16px auto 0; }
 .homefoot { margin-top: 34px; text-align: center; color: var(--muted); font-size: 14px; line-height: 1.7; }
 .poster { display: block; margin: 30px auto 0; max-width: 520px; width: 100%; border-radius: 18px; border: 1px solid var(--line); }
 
@@ -293,8 +293,8 @@ footer b { color: var(--ink); }
   <!-- ======================= HOME ======================= -->
   <section class="view" id="v-home" aria-label="Home">
     <div class="hero">
-      <p class="title"><span class="n">NeurIPS</span><span class="y">2026</span></p>
-      <p class="kick">Explorer <span>· an unofficial guide to the accepted papers</span></p>
+      <p class="title"><span class="n">NeurIPS</span><span class="y">2026</span><br><span class="e">Explorer</span></p>
+      <p class="kick">An unofficial guide to the accepted papers</p>
       <p>Who wrote the accepted papers, and who works on what. Two&nbsp;ways&nbsp;in:</p>
       <div class="stats" id="stats"></div>
     </div>
