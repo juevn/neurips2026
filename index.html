@@ -14,7 +14,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="NeurIPS 2026 Explorer">
-<meta name="twitter:description" content="Who works on your topic? Search a paper's title or abstract, or look up any of 3,620 institutions.">
+<meta name="twitter:description" content="Who works on your topic? Search a paper's title or abstract, or look up any of 3,618 institutions.">
 <meta name="twitter:image" content="https://juevn.github.io/neurips2026/assets/og-card.png">
 <meta name="twitter:creator" content="@jueun_kim_">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -53,6 +53,7 @@ button { font-family: inherit; }
 .brand { all: unset; cursor: pointer; font-family: 'Google Sans Display', 'Google Sans', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -.5px; white-space: nowrap; }
 .brand .n { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .brand .y { margin-left: 4px; color: transparent; -webkit-text-stroke: 1.2px var(--ink); }
+.brand .x { margin-left: 7px; color: var(--muted); font-weight: 500; letter-spacing: 0; }
 .tabs { display: flex; gap: 4px; margin-left: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 4px; }
 .tabs a { text-decoration: none; color: var(--muted); font-weight: 700; font-size: 14.5px; padding: 7px 14px; border-radius: 9px; white-space: nowrap; }
 .tabs a[aria-current="page"] { background: var(--bg); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
@@ -84,6 +85,8 @@ button { font-family: inherit; }
 .door .eg { margin-top: auto; font-size: 14px; color: var(--faint); }
 .door .go { font-weight: 700; font-size: 16px; display: inline-flex; align-items: center; gap: 6px; }
 .door.inst .go { color: var(--aca); } .door.topic .go { color: var(--ind); }
+.hero .kick { font-weight: 700; font-size: clamp(15px, 2.2vw, 19px); letter-spacing: 6px; text-transform: uppercase; color: var(--ink); margin: 14px auto 0; }
+.hero .kick span { letter-spacing: 0; text-transform: none; font-weight: 500; color: var(--muted); }
 .homefoot { margin-top: 34px; text-align: center; color: var(--muted); font-size: 14px; line-height: 1.7; }
 .poster { display: block; margin: 30px auto 0; max-width: 520px; width: 100%; border-radius: 18px; border: 1px solid var(--line); }
 
@@ -268,6 +271,7 @@ footer b { color: var(--ink); }
   td.mix, th.mix, td.pct, th.pct { display: none; }
   .count { margin-left: 0; width: 100%; }
   .topbar .brand .y { display: none; }
+  .topbar .brand .x { display: none; }
   .tabs a { padding: 7px 10px; font-size: 14px; }
   .qrow { flex-direction: column; align-items: stretch; }
   .qrow .btn { width: 100%; height: 50px; justify-content: center; }
@@ -277,7 +281,7 @@ footer b { color: var(--ink); }
 <body>
 <nav class="topbar" aria-label="Main">
   <div class="in">
-    <a class="brand" href="#/" aria-label="Home"><span class="n">NeurIPS</span><span class="y">2026</span></a>
+    <a class="brand" href="#/" aria-label="Home"><span class="n">NeurIPS</span><span class="y">2026</span><span class="x">Explorer</span></a>
     <div class="tabs">
       <a href="#/institutions" data-tab="institutions">Institutions</a>
       <a href="#/topics" data-tab="topics">Topics &amp; papers</a>
@@ -290,6 +294,7 @@ footer b { color: var(--ink); }
   <section class="view" id="v-home" aria-label="Home">
     <div class="hero">
       <p class="title"><span class="n">NeurIPS</span><span class="y">2026</span></p>
+      <p class="kick">Explorer <span>· an unofficial guide to the accepted papers</span></p>
       <p>Who wrote the accepted papers, and who works on what. Two&nbsp;ways&nbsp;in:</p>
       <div class="stats" id="stats"></div>
     </div>
@@ -310,7 +315,7 @@ footer b { color: var(--ink); }
       </a>
     </div>
     <img class="poster" src="assets/poster.png" alt="NeurIPS 2026 summary poster: academia vs industry, research areas, top institutions" loading="lazy">
-    <p class="homefoot">Made by <a href="https://juevn.github.io/" rel="noopener"><b>Jueun Kim</b></a> (POSTECH) · <a href="https://x.com/jueun_kim_" rel="noopener">@jueun_kim_</a><br>My NeurIPS 2026 paper: <a href="https://neurips.cc/virtual/2026/poster/155067" rel="noopener">Hi-Q</a>, hierarchical query refinement for multi-hop QA · Sydney Poster Session 6, Dec 10</p>
+    <p class="homefoot">Made by <a href="https://juevn.github.io/" rel="noopener"><b>Jueun Kim</b></a> (POSTECH) · <a href="https://x.com/jueun_kim_" rel="noopener">@jueun_kim_</a><br>My NeurIPS 2026 paper: <a href="https://neurips.cc/virtual/2026/poster/155067" rel="noopener">Hi-Q</a>, hierarchical query refinement for multi-hop QA · Sydney Poster Session 6, Dec 10<br><span class="unoff">Unofficial project, not affiliated with or endorsed by NeurIPS.</span></p>
   </section>
 
   <!-- ======================= INSTITUTIONS ======================= -->
@@ -390,7 +395,7 @@ footer b { color: var(--ink); }
     </details>
     <footer>
       <span>Made by <a href="https://juevn.github.io/" rel="noopener"><b>Jueun Kim</b></a> (POSTECH), author of <a href="https://neurips.cc/virtual/2026/poster/155067" rel="noopener">Hi-Q</a> (NeurIPS 2026) · <a href="https://x.com/jueun_kim_" rel="noopener">@jueun_kim_</a></span>
-      <span>Data snapshot <span class="snap"></span></span>
+      <span>Unofficial, not affiliated with NeurIPS · data snapshot <span class="snap"></span></span>
     </footer>
   </section>
 </div>
