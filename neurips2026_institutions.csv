@@ -1561,6 +1561,7 @@ rank,institution,papers,pct_of_papers,fractional_papers,country,sector,LLM reaso
 1501,xLight Inc,1,0.01,1.0,,industry,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0
 1501,Loughborough University,1,0.01,1.0,,academia,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0
 1501,Abdus Salam international centre for theoretical physics,1,0.01,1.0,,academia,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0
+1501,Wroclaw University of Science and Technology,1,0.01,1.0,,academia,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 1501,SK Telecom,1,0.01,0.9,,industry,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0
 1501,Shell,1,0.01,0.9,,academia,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0
 1501,University of Moratuwa,1,0.01,0.9,,academia,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -1606,7 +1607,6 @@ rank,institution,papers,pct_of_papers,fractional_papers,country,sector,LLM reaso
 1501,University of Pavia,1,0.01,0.7,,academia,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0
 1501,University of Turku,1,0.01,0.7,,academia,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0
 1501,Université Clermont Auvergne,1,0.01,0.7,,academia,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0
-1501,"Wroclaw University of Science and Technology, Poland",1,0.01,0.7,,academia,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 1501,Zhongnan University of Economics and Law,1,0.01,0.7,,academia,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0
 1501,d-matrix,1,0.01,0.7,,academia,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0
 1501,Idiap Research Institute,1,0.01,0.7,,academia,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -2025,7 +2025,6 @@ rank,institution,papers,pct_of_papers,fractional_papers,country,sector,LLM reaso
 1501,"Visvesvaraya Technological University, Dhirubhai Ambani Institute Of Information and Communication Technology",1,0.01,0.3,,academia,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
 1501,Waabi,1,0.01,0.3,,academia,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0
 1501,"Weierstrass Institute, Berlin",1,0.01,0.3,,academia,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0
-1501,Wroclaw University of Science and Technology,1,0.01,0.3,,academia,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 1501,Xenoscube,1,0.01,0.3,,academia,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 1501,apb@ecs.soton.ac.uk,1,0.01,0.3,,academia,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0
 1501,armasuisse,1,0.01,0.3,,academia,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0
