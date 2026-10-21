@@ -45,4 +45,4 @@ Found a wrong or split institution? Please [open an issue](https://github.com/ju
 
 ## Credit
 
-Made by Jueun Kim (POSTECH) · [@jueun_kim_](https://x.com/jueun_kim_), author of [Hi-Q](https://neurips.cc/virtual/2026/poster/155067) (NeurIPS 2026, Sydney Poster Session 6). Format inspired by Pierre-Alexandre Balland's NeurIPS 2025 institution treemap.
+Made by [Jueun Kim](https://juevn.github.io/) (POSTECH) · [@jueun_kim_](https://x.com/jueun_kim_), author of [Hi-Q](https://neurips.cc/virtual/2026/poster/155067) (NeurIPS 2026, Sydney Poster Session 6). Format inspired by Pierre-Alexandre Balland's NeurIPS 2025 institution treemap.
