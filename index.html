@@ -14,7 +14,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="NeurIPS 2026 Explorer">
-<meta name="twitter:description" content="Who works on your topic? Search a paper's title or abstract, or look up any of 3,618 institutions.">
+<meta name="twitter:description" content="Who works on your topic? Search a paper's title or abstract, or look up any of 3,591 institutions.">
 <meta name="twitter:image" content="https://juevn.github.io/neurips2026/assets/og-card.png">
 <meta name="twitter:creator" content="@jueun_kim_">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -401,13 +401,13 @@ footer b { color: var(--ink); }
 </div>
 <div class="toast" id="toast" role="status"></div>
 
-<script src="data.js?v=949852f45b"></script>
+<script src="data.js?v=3e0f4c7b99"></script>
 <script>
 (() => {
   'use strict';
   const D = window.NEURIPS, M = D.meta, A = M.areas, INST = D.inst, N = M.papers;
   const REPO_URL = 'https://github.com/juevn/neurips2026';
-  const PVER = '3cc14d6e3a';
+  const PVER = 'b8f2c3b121';
   const $ = (s) => document.querySelector(s);
   const el = (tag, props = {}, kids = []) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (v == null) continue; if (k === 'style') e.style.cssText = v; else if (k === 'text') e.textContent = v; else if (k.startsWith('data-') || k.startsWith('aria-') || k === 'role') e.setAttribute(k, v); else e[k] = v; } for (const c of [].concat(kids)) if (c != null) e.append(c); return e; };
   const fmt = (x) => x.toLocaleString('en-US');
